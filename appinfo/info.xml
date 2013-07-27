@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<info>
+	<id>groupmanager</id>
+	<name>Groupmanager</name>
+	<description>This app allows users to manage there own groups</description>
+	<version>1.0</version>
+	<licence>AGPL</licence>
+	<shipped>true</shipped>
+	<author>Andreas Hechenberger</author>
+	<require>5</require>
+</info>
