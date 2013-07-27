@@ -295,6 +295,13 @@ class Group {
 	       //TODO remove from members array
 	       //cautious there should be always the groupadmin in the members
 	       //array
+	       if(count($this->listOfMembers)>0){
+	            for ($i = 0; $i < count($this->listOfMembers); $i++) {
+	                if($user === $listOfMembers[$i]){
+        	            unset($this->listOfMembers[$i]);
+	                }
+                }
+	        }
 	}
 	
     //TODO not goot to set groupadmin better to add and remove groupadmins
@@ -320,6 +327,13 @@ class Group {
 	public function removeAdmin($user){
 	        //TODO remove $groupadmin from groupadmin array
 	        //cautious there schould be ever at least one groupadmin
+	       if(count($this->listOfAdmins)>0){
+	            for ($i = 0; $i < count($this->listOfAdmins); $i++) {
+	                if($user === $listOfAdmins[$i]){
+        	            unset($this->listOfAdmins[$i]);
+	                }
+                }
+	        }
 	}
 
 	
