@@ -7,7 +7,7 @@ namespace OCA\Groupmanager;
 $api = new \OCA\AppFramework\Core\API('groupmanager');
 
 // creates a new GroupBackend
-$groupBackend = new \OCA\Groupmanager\lib\GroupmanagerBackend();
+$groupBackend = new \OCA\Groupmanager\Db\GroupmanagerBackend();
 
 // register the GroupBackend to Owncloud
 \OC_Group::useBackend($groupBackend);
@@ -36,5 +36,5 @@ $api->addNavigationEntry(array(
 ));
 
 // register the settings in the admin panel
-$api->registerAdmin('settings');
+//$api->registerAdmin('settings');
 

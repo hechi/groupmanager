@@ -19,7 +19,7 @@
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 *
 * 
-* Represents a group in the Groupmanager app
+* Represents a group of users in the Groupmanager app
 *
 */
 
