@@ -224,15 +224,14 @@ function createUser(id,name){
     return newTextField;
 }
 
-/*
-<tr class="member" style="display: table-row;">
-                <td class="name ui-draggable">Member 1</td>
-                <td class="email">Member1@email.com</td>
-                <td class="actions admin"><input type="checkbox" class="toggle" checked="checked" disabled="disabled" ></input></td>
-                <td class="actions delete"><a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a></td>
-</tr>
-
-*/
+/**
+ * TODO permission checking and should the user have the permission to remove himselfe?
+ * create a table row with the given parameters
+ * @param int id userid
+ * @param string name which should be displayed
+ * @param string email address which should be displayed
+ * @param boolean if the user have the permission to change and delete members
+ */
 function createMember(id,name,email,admin){
     var newRow = $('<tr>');
     
@@ -265,16 +264,18 @@ function createMember(id,name,email,admin){
     //cell for the delete action
     //TODO add action to delete member of group and check the permission
     var cellDelete = $('<td>');
-    var removeIcon = $('<a>');
-    removeIcon.addClass("svg");
-    removeIcon.addClass("delete");
-    removeIcon.addClass("action");
-    removeIcon.attr('original-title',translate('Delete'));
-    removeIcon.click(function(){
-        alert("remove member "+id);
-    });
-    cellDelete.append(removeIcon);
-    
+    if(admin){
+        var removeIcon = $('<a>');
+        removeIcon.addClass("svg");
+        removeIcon.addClass("delete");
+        removeIcon.addClass("action");
+        removeIcon.attr('original-title',translate('Delete'));
+        removeIcon.click(function(){
+            alert("remove member "+id);
+        });
+        cellDelete.append(removeIcon);
+    }
+       
     newRow.append(cellName);
     newRow.append(cellEmail);
     newRow.append(cellAdmin);
