@@ -309,11 +309,20 @@ function topContent(){
             self.checkGroupname(self.newGroupField.attr('value'));
         }
     });
+    //text disappear if user click into that field
+    self.newGroupField.click(function(){
+        self.newGroupField.attr('value','');
+    });
 }
 
 function leftContent(){
-    self.userSearchResult.keypress(function(event){
-        self.getUsers(self.newGroupField.attr('value'));
+    self.userSearchInput.keypress(function(event){
+        //TODO
+        self.getUsers(self.userSearchInput.attr('value'));
+    });
+    //text disappear if user click into that field
+    self.userSearchInput.click(function(){
+        self.userSearchInput.attr('value','');
     });
 }
 
