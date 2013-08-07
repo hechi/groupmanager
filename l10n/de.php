@@ -11,5 +11,6 @@
 "Yes" => "Ja",
 "Autocompletion" => "Autovervollständigung",
 "Search Users" => "Suche Benutzer",
-"Groupname" => "Gruppenname"
+"Groupname" => "Gruppenname",
+"please enter a new group name" => "Bitte geben Sie einen neuen Gruppennamen ein"
 );

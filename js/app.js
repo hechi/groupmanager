@@ -34,12 +34,16 @@ var userSearchResult;
 var userSearchInput;
 var memberlist;
 var notifyCreation;
+var newGroupText;
 
 /*********** STATUS-FLAGS for notification of creating process ***********/
 var ERROR = -2;     // an error appears
 var NOTVALID = -1;   // groupname is not valid
 var OK = 1;         // every thing is okay groupname is valid
 var CHECKING = 2;    // checking if groupname is not taken
+
+/*********** KEY EVENTs ***********/
+var KEY_ENTER = 13;
 
 // searialize a list to a jsonstring
 // this jsonstring can be used in an php document to parse it into an array
@@ -59,7 +63,7 @@ function serializeListToJSON(tagName){
     return serialized;
 }
 /**
- * @param status flag, see on the head of this file
+ * @param flag int, status flag. see on the head of this file
  */
 function notifyGroupCreation(flag){
     switch(flag){
@@ -86,41 +90,133 @@ function displayError(msg){
     debugLog(msg);
 }
 
+//TODO: find a error sign
 function displayFail(){
     self.notifyCreation.removeClass("hidden");
     self.notifyCreation.attr("src",OC.imagePath('core','loading.gif'));
-    self.notifyCreation.attr("alt","loading...");
+    self.notifyCreation.attr("alt","error");
+    self.hideNewGroupText();
 }
 
 function displayOk(){
     self.notifyCreation.removeClass("hidden");
-    self.notifyCreation.attr("src",OC.imagePath('core','actions/add.png'));
-    self.notifyCreation.attr("alt","loading...");
+    self.notifyCreation.attr("src",OC.imagePath('groupmanager','checkmark.png'));
+    self.notifyCreation.attr("alt","groupname is valid");
+    self.hideNewGroupText();
 }
 
 function displayLoading(){
     self.notifyCreation.removeClass("hidden");
     self.notifyCreation.attr("src",OC.imagePath('core','loading.gif'));
     self.notifyCreation.attr("alt","loading...");
+    self.hideNewGroupText();
 }
 
+function hideNewGroupText(){
+    self.newGroupText.addClass("hidden");
+}
+
+/**
+ * hide notification image
+ */
 function hideNotify(){
     self.notifyCreation.addClass("hidden");
+}
+
+function displayNewGroupInput(){
+    self.newGroupButton.addClass("hidden");
+    self.newGroupButton.removeClass("button");
+    self.newGroupField.removeClass("hidden");
+    self.newGroupText.removeClass("hidden");
 }
 
 function debugLog(msg){
     console.log("Groupmanager: "+msg);
 }
 
+/**
+ * if the button 'New Group' is pressed
+ */
+function newGroup(){
+    self.displayNewGroupInput();
+}
+
+/**
+ * create group
+ * TODO: call pagecontroller
+ */
+function createGroup(){
+    if(self.checkGroupname()){
+        self.grouplist.append(self.createLiElement(self.newGroupField.attr('value')));
+        self.debugLog("create group "+self.newGroupField.attr('value'));
+    }else{
+        self.displayFail();
+    }
+}
+
+/**
+ * call the translation function of owncloud (core/js/js.js
+ * return string returns the translated string
+ */
+function translate(msg){
+    return t('groupmanager',msg);
+}
+
+/**
+ *
+ */
+ //<a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
+function createLiElement(groupname){
+    var newLiElement = $('<li>');
+    var newTextField = $('<textfield>');
+    var removeIcon = $('<a>');
+    newTextField.text(groupname);
+    removeIcon.addClass("svg");
+    removeIcon.addClass("delete");
+    removeIcon.addClass("action");
+    removeIcon.attr('original-title',translate('Delete'));
+    newLiElement.append(newTextField);
+    newLiElement.append(removeIcon);
+    newLiElement.addClass("group");
+    return newLiElement;
+}
+
+/**
+ * check if groupname is not taken
+ * @return boolean true if the groupname is valid
+ */
+function checkGroupname(){
+    self.notifyGroupCreation(self.CHECKING);
+    self.notifyGroupCreation(self.OK);
+    return true;
+}
+
+function topContent(){
+    self.newGroupButton.click(function(){
+        self.newGroup();
+    });
+    self.newGroupField.keypress(function(event){
+        if(event.which==KEY_ENTER){
+            self.createGroup();
+        }else{
+            self.checkGroupname();
+        }
+    });
+}
+
+function leftContent(){
+
+}
+
+function rightContent(){
+
+}
+
 // define all actions for the buttons and textfields etc.
 function regActions(){
-    self.newGroupButton.click(function(){
-        self.newGroupButton.addClass("hidden");
-        self.newGroupButton.removeClass("button");
-        self.newGroupField.removeClass("hidden");
-        self.notifyGroupCreation(self.CHECKING);
-        self.notifyGroupCreation(self.ERROR);
-    });
+    topContent();
+    leftContent();
+    rightContent();
     
 }
 
@@ -133,6 +229,7 @@ function init(){
     self.userSearchInput=$("#userSearchInput");
     self.memberlist=$("#memberlist");
     self.notifyCreation=$("#notifyCreation");
+    self.newGroupText=$("#newGroupText");
 }
 
 $(document).ready(function () {

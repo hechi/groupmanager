@@ -4,6 +4,7 @@
 	    <button class="button addGroup" id="newGroupButton">{{trans('New Group')}}</button>
 	    <input class="hidden addGroup" type="text" tabindex="0" id="newGroupField" value="{{trans('Groupname')}}"></input>
 	    <img class="hidden" id="notifyCreation" alt="NotifyError" ></img>
+	    <textfield class="hidden addGroup" id="newGroupText">{{trans('please enter a new group name')}}</textfield>
     </div>
 </div>
 <!-- the left list of groups, where the user is member of -->
