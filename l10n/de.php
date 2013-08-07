@@ -10,5 +10,6 @@
 "Unique groupidentifier" => "Eindeutige Gruppenkennung",
 "Yes" => "Ja",
 "Autocompletion" => "Autovervollständigung",
-"Search Users" => "Suche Benutzer"
+"Search Users" => "Suche Benutzer",
+"Groupname" => "Gruppenname"
 );

@@ -1,18 +1,24 @@
+<!-- head panel to create new groups -->
 <div id="controls">
-	<button class="button" id="new">{{trans('New Group')}}</button>
+	<div class="input" id="inputNewGroup">
+	    <button class="button addGroup" id="newGroupButton">{{trans('New Group')}}</button>
+	    <input class="hidden addGroup" type="text" tabindex="0" id="newGroupField" value="{{trans('Groupname')}}"></input>
+	    <img class="hidden" id="notifyCreation" alt="NotifyError" ></img>
+    </div>
 </div>
-    <ul id="grouplist" class="hascontrols grouplist">
-	    <!-- filled by the /js/app.js -->
-	    <li class="group">
-            <textfield>Testgroup 1</textfield>
-            <a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
-        </li>
-        <li class="group">
-            <textfield>Testgroup 2</textfield>
-            <a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
-        </li>
-    </ul>
-
+<!-- the left list of groups, where the user is member of -->
+<ul id="grouplist" class="hascontrols grouplist">
+    <!-- filled by the /js/app.js -->
+    <li class="group">
+        <textfield>Testgroup 1</textfield>
+        <a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
+    </li>
+    <li class="group">
+        <textfield>Testgroup 2</textfield>
+        <a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
+    </li>
+</ul>
+<!-- content of the activated group -->
 <div id="rightcontent">
 	<!-- filled by the /js/app.js -->
 	<div id="userSearchResult" class="userSearch">
@@ -23,16 +29,6 @@
 	<table id="memberlist">
         <thead>
             <tr id="groupHeader">
-                <!--
-                <td class="name">
-                    <input type="checkbox" class="toggle" title="{{trans('(De-)select all')}}" />
-                    <select class="action sort permanent" name="sort" title="{{trans('Sort order')}}">
-                    <option value="fn">{{trans('Display name')}}</option>
-                    <option value="fl">{{trans('First- Lastname')}}</option>
-                    <option value="lf">{{trans('Last-, Firstname')}}</option>
-                    </select>
-                </td>
-                -->
                 <td class="name">{{trans('Name')}}</td>
                 <td class="info email">{{trans('Email')}}</td>
                 <td class="actions">{{trans('Admin')}}</td>

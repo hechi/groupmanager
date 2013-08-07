@@ -77,6 +77,30 @@
   margin: 30px auto;
 }
 
+
+.userBox:hover
+{
+  position: relative;
+  width: 30%;
+  background: #808080;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 0.5em 1.5em;
+  color: rgba(0,0,0, .8);
+  text-shadow: 0 1px 0 #ffffff;
+  line-height: 1;
+  margin: 30px auto;
+}
+
+#notifyCreation{
+    position:absolute;
+    clear: right
+    padding: 0px;
+    margin-top:7px;
+    width:auto;
+    height:20px;
+}
+
 #memberlist { }
 #memberlist > thead > tr > td { padding-left:10px;}
 #memberlist > tbody {
