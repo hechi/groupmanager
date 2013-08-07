@@ -156,7 +156,8 @@ function createGroup(){
 
 /**
  * call the translation function of owncloud (core/js/js.js
- * return string returns the translated string
+ * @param string message to translate, it have been in the l10n/*.php files
+ * @return string returns the translated string
  */
 function translate(msg){
     return t('groupmanager',msg);
@@ -175,6 +176,9 @@ function createLiElement(groupname){
     removeIcon.addClass("delete");
     removeIcon.addClass("action");
     removeIcon.attr('original-title',translate('Delete'));
+    removeIcon.click(function(){
+        alert("remove group "+groupname);
+    });    
     newLiElement.append(newTextField);
     newLiElement.append(removeIcon);
     newLiElement.addClass("group");
@@ -182,13 +186,116 @@ function createLiElement(groupname){
 }
 
 /**
+ *TODO
  * check if groupname is not taken
+ * @param string characters of the groupname
  * @return boolean true if the groupname is valid
  */
-function checkGroupname(){
+function checkGroupname(groupname){
     self.notifyGroupCreation(self.CHECKING);
     self.notifyGroupCreation(self.OK);
     return true;
+}
+
+/**
+ * get users that matches the string in the userSearchResult field
+ * @param string characters of the username
+ */
+function getUsers(username){
+    //TODO get users with the spezial characters form the DB
+    self.userSearchResult.append(createUser(0,"mem1"));
+    self.userSearchResult.append(createUser(1,"mem2"));
+}
+
+/**
+ * create a textfield with id and name of the user
+ * @param int id of the user
+ * @param string name of the user which should be displayed
+ * @return textfield object
+ */
+function createUser(id,name){
+    var newTextField = $('<textfield>');
+    newTextField.attr('id',id);
+    newTextField.text(name);
+    newTextField.addClass("userBox");
+    newTextField.click(function(){
+        self.addMember(id);
+    });
+    return newTextField;
+}
+
+/*
+<tr class="member" style="display: table-row;">
+                <td class="name ui-draggable">Member 1</td>
+                <td class="email">Member1@email.com</td>
+                <td class="actions admin"><input type="checkbox" class="toggle" checked="checked" disabled="disabled" ></input></td>
+                <td class="actions delete"><a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a></td>
+</tr>
+
+*/
+function createMember(id,name,email,admin){
+    var newRow = $('<tr>');
+    
+    //cell for name
+    var cellName = $('<td>');
+    cellName.addClass("name");
+    cellName.addClass("ui-draggable");
+    cellName.text(name);
+    
+    //cell for emailaddress
+    var cellEmail = $('<td>');
+    cellEmail.addClass("email");
+    cellEmail.text(email);
+    
+    //cell for admin status
+    //TODO action if it change and if the user have the permission to change it
+    var cellAdmin = $('<td>');
+    cellAdmin.addClass("actions");
+    cellAdmin.addClass("admin");
+    var adminCheckbox = $('<input>');
+    adminCheckbox.addClass("toggle");
+    adminCheckbox.attr('type','checkbox');
+    if(admin){
+        adminCheckbox.attr('checked','checked');
+    }
+    //TODO check if user have permission to change
+    adminCheckbox.attr('disabled','disabled');
+    cellAdmin.append(adminCheckbox);
+    
+    //cell for the delete action
+    //TODO add action to delete member of group and check the permission
+    var cellDelete = $('<td>');
+    var removeIcon = $('<a>');
+    removeIcon.addClass("svg");
+    removeIcon.addClass("delete");
+    removeIcon.addClass("action");
+    removeIcon.attr('original-title',translate('Delete'));
+    removeIcon.click(function(){
+        alert("remove member "+id);
+    });
+    cellDelete.append(removeIcon);
+    
+    newRow.append(cellName);
+    newRow.append(cellEmail);
+    newRow.append(cellAdmin);
+    newRow.append(cellDelete);
+    newRow.addClass("member");
+    newRow.attr('style',"display:table-row;");
+    newRow.attr('id',id);
+    return newRow;
+}
+
+/**
+ * add a user as member to the group
+ * @param int id of the user
+ */
+function addMember(id){
+    //TODO get member from DB
+    //TODO save member to group
+    var tbody = self.memberlist.children('tbody');
+    //TODO dummy
+    tbody.append(self.createMember(0,"mem1","bla@fuu",true));
+    tbody.append(self.createMember(0,"memasdf","bla@fuu",false));
 }
 
 function topContent(){
@@ -199,8 +306,11 @@ function topContent(){
         if(event.which==KEY_ENTER){
             self.createGroup();
         }else{
-            self.checkGroupname();
+            self.checkGroupname(self.newGroupField.attr('value'));
         }
+    });
+    self.userSearchResult.keypress(function(event){
+        self.getUsers(self.newGroupField.attr('value'));
     });
 }
 
