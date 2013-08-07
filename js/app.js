@@ -46,7 +46,7 @@ var CHECKING = 2;    // checking if groupname is not taken
 var KEY_ENTER = 13;
 
 // searialize a list to a jsonstring
-// this jsonstring can be used in an php document to parse it into an array
+// this jsonstring can be used to parse it into an array
 function serializeListToJSON(tagName){
     var serialized = '{';
     var len = $('li', tagName).length - 1;
@@ -274,8 +274,7 @@ function createMember(id,name,email,admin){
             alert("remove member "+id);
         });
         cellDelete.append(removeIcon);
-    }
-       
+    }       
     newRow.append(cellName);
     newRow.append(cellEmail);
     newRow.append(cellAdmin);
@@ -296,7 +295,7 @@ function addMember(id){
     var tbody = self.memberlist.children('tbody');
     //TODO dummy
     tbody.append(self.createMember(0,"mem1","bla@fuu",true));
-    tbody.append(self.createMember(0,"memasdf","bla@fuu",false));
+    tbody.append(self.createMember(1,"memasdf","bla@fuu",false));
 }
 
 function topContent(){
@@ -310,13 +309,12 @@ function topContent(){
             self.checkGroupname(self.newGroupField.attr('value'));
         }
     });
-    self.userSearchResult.keypress(function(event){
-        self.getUsers(self.newGroupField.attr('value'));
-    });
 }
 
 function leftContent(){
-
+    self.userSearchResult.keypress(function(event){
+        self.getUsers(self.newGroupField.attr('value'));
+    });
 }
 
 function rightContent(){
