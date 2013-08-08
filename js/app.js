@@ -334,6 +334,9 @@ function topContent(){
 }
 
 function leftContent(){
+}
+
+function rightContent(){
     self.userSearchInput.keypress(function(event){
         //TODO
         self.getUsers(self.userSearchInput.attr('value'));
@@ -342,10 +345,6 @@ function leftContent(){
     self.userSearchInput.click(function(){
         self.userSearchInput.attr('value','');
     });
-}
-
-function rightContent(){
-
 }
 
 // define all actions for the buttons and textfields etc.
