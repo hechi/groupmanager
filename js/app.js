@@ -45,7 +45,22 @@ var CHECKING = 2;    // checking if groupname is not taken
 /*********** KEY EVENTs ***********/
 var KEY_ENTER = 13;
 
-// searialize a list to a jsonstring
+/**
+ * init needed HTML field to have an easier useage in this document
+ */
+function init(){
+    this.self = this;
+    self.newGroupButton=$("#newGroupButton");
+    self.newGroupField=$("#newGroupField");
+    self.grouplist=$("#grouplist");
+    self.userSearchResult=$("#userSearchResult");
+    self.userSearchInput=$("#userSearchInput");
+    self.memberlist=$("#memberlist");
+    self.notifyCreation=$("#notifyCreation");
+    self.newGroupText=$("#newGroupText");
+}
+
+// serialize a list to a jsonstring
 // this jsonstring can be used to parse it into an array
 function serializeListToJSON(tagName){
     var serialized = '{';
@@ -71,7 +86,7 @@ function notifyGroupCreation(flag){
             displayError("error is appeared");
             break;
         case NOTVALID:
-            displayFail();
+            displayNotValid();
             break;
         case OK:
             displayOk();
@@ -85,19 +100,30 @@ function notifyGroupCreation(flag){
     }
 }
 
+/**
+ * display a dialog to say there is an error
+ * @param string msg which should be displayed for the user
+ */
 function displayError(msg){
     OC.dialogs.alert(msg+" please check logs or contact your systemadministrator",t('groupmanager','Error'));
     debugLog(msg);
 }
 
 //TODO: find a error sign
-function displayFail(){
-    self.notifyCreation.removeClass("hidden");
-    self.notifyCreation.attr("src",OC.imagePath('core','loading.gif'));
-    self.notifyCreation.attr("alt","error");
-    self.hideNewGroupText();
+/**
+ * display a string and sign that the groupname is not valid and someone else
+ * has taken it
+ */
+function displayNotValid(){
+    self.hideNotify();
+    self.newGroupText.removeClass("hidden");
+    self.newGroupText.text(self.translate("group name already taken"));
 }
 
+/**
+ * show a checkmark sign on the right side of the groupnameinputfield
+ * it says that the groupname is valid und can be confirmed with ENTER/RETURN
+ */
 function displayOk(){
     self.notifyCreation.removeClass("hidden");
     self.notifyCreation.attr("src",OC.imagePath('groupmanager','checkmark.png'));
@@ -105,6 +131,10 @@ function displayOk(){
     self.hideNewGroupText();
 }
 
+/**
+ * show a loading sign on the right side of the groupnameinputfield
+ * describe the process to validate the groupname
+ */ 
 function displayLoading(){
     self.notifyCreation.removeClass("hidden");
     self.notifyCreation.attr("src",OC.imagePath('core','loading.gif'));
@@ -112,6 +142,9 @@ function displayLoading(){
     self.hideNewGroupText();
 }
 
+/**
+ * hide text on the top
+ */
 function hideNewGroupText(){
     self.newGroupText.addClass("hidden");
 }
@@ -123,6 +156,9 @@ function hideNotify(){
     self.notifyCreation.addClass("hidden");
 }
 
+/**
+ * hide newGroup Button, display input field and display description text
+ */
 function displayNewGroupInput(){
     self.newGroupButton.addClass("hidden");
     self.newGroupButton.removeClass("button");
@@ -130,30 +166,47 @@ function displayNewGroupInput(){
     self.newGroupText.removeClass("hidden");
 }
 
+/**
+ * only for debug informations
+ * @param string msg print msg text on console.log
+ */
 function debugLog(msg){
     console.log("Groupmanager: "+msg);
 }
 
-function removeGroup(id,element){
+/**
+ * remove group from db and delete created element where the displayed information
+ * are stored on the left side
+ * @param int gid group id 
+ * @param HTMLobject element a HTML element where the remove method can be called
+ */
+function removeGroup(gid,element){
     //TODO: remove group from db with ID
     element.remove();
 }
 
-function removeMember(id,element){
+/**
+ * remove member from group and delete created element where the displayed information
+ * are stored on the right side
+ * @param int uid member id 
+ * @param HTMLobject element a HTML element where the remove method can be called
+ */
+function removeMember(uid,element){
     //TODO: remove member from group on db
     //TODO: check if there is  at least one member left
     element.remove();
 }
 
 /**
- * if the button 'New Group' is pressed
+ * if the button 'New Group' is pressed display the input field and description
  */
 function newGroup(){
     self.displayNewGroupInput();
 }
 
 /**
- * create group
+ * create the group via db call and take the groupid from the db to create
+ * the HTML element with the groupid
  * TODO: call pagecontroller
  */
 function createGroup(){
@@ -161,7 +214,7 @@ function createGroup(){
         self.grouplist.append(self.createLiElement(0,self.newGroupField.attr('value')));
         self.debugLog("create group "+self.newGroupField.attr('value'));
     }else{
-        self.displayFail();
+        self.displayNotValid();
     }
 }
 
@@ -176,12 +229,11 @@ function translate(msg){
 
 /**
  * create a li element for the leftcontent
- * @param int id of the group
+ * @param int gid of the group
  * @param string groupname which should be displayed
  * @return li object
  */
- //<a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
-function createLiElement(id,groupname){
+function createLiElement(gid,groupname){
     var newLiElement = $('<li>');
     var newTextField = $('<textfield>');
     var removeIcon = $('<a>');
@@ -192,7 +244,7 @@ function createLiElement(id,groupname){
     removeIcon.attr('original-title',translate('Delete'));
     removeIcon.click(function(){
         //TODO ask if you are sure
-        self.removeGroup(id,newLiElement);
+        self.removeGroup(gid,newLiElement);
     });    
     newLiElement.append(newTextField);
     newLiElement.append(removeIcon);
@@ -201,7 +253,7 @@ function createLiElement(id,groupname){
 }
 
 /**
- *TODO
+ * TODO
  * check if groupname is not taken
  * @param string characters of the groupname
  * @return boolean true if the groupname is valid
@@ -213,43 +265,44 @@ function checkGroupname(groupname){
 }
 
 /**
+ * TODO
  * get users that matches the string in the userSearchResult field
  * @param string characters of the username
  */
 function getUsers(username){
-    //TODO get users with the spezial characters form the DB
-    //remove alle child elements with the class userBox
+    //TODO get users with the special characters form the DB
+    //remove all child elements with the class userBox
     self.userSearchResult.children(".userBox").remove();
     self.userSearchResult.append(createUser(0,"mem1"));
     self.userSearchResult.append(createUser(1,"mem2"));
 }
 
 /**
- * create a textfield with id and name of the user
- * @param int id of the user
+ * create a HTML textfield with id and name of the user
+ * @param int uid of the user
  * @param string name of the user which should be displayed
  * @return textfield object
  */
-function createUser(id,name){
+function createUser(uid,name){
     var newTextField = $('<textfield>');
-    newTextField.attr('id',id);
+    newTextField.attr('id',uid);
     newTextField.text(name);
     newTextField.addClass("userBox");
     newTextField.click(function(){
-        self.addMember(id);
+        self.addMember(uid);
     });
     return newTextField;
 }
 
 /**
- * TODO permission checking and should the user have the permission to remove himselfe?
- * create a table row with the given parameters
- * @param int id userid
+ * TODO permission checking and should the user have the permission to remove himself?
+ * create a HTML table row with the given parameters
+ * @param int uid userid
  * @param string name which should be displayed
  * @param string email address which should be displayed
  * @param boolean if the user have the permission to change and delete members
  */
-function createMember(id,name,email,admin){
+function createMember(uid,name,email,admin){
     var newRow = $('<tr>');
     
     //cell for name
@@ -258,7 +311,7 @@ function createMember(id,name,email,admin){
     cellName.addClass("ui-draggable");
     cellName.text(name);
     
-    //cell for emailaddress
+    //cell for email address
     var cellEmail = $('<td>');
     cellEmail.addClass("email");
     cellEmail.text(email);
@@ -288,8 +341,8 @@ function createMember(id,name,email,admin){
         removeIcon.addClass("action");
         removeIcon.attr('original-title',translate('Delete'));
         removeIcon.click(function(){
-            alert("remove member "+id);
-            self.removeMember(id,newRow);
+            //TODO alert box ? alert("remove member "+uid);
+            self.removeMember(uid,newRow);
         });
         cellDelete.append(removeIcon);
     }       
@@ -299,15 +352,15 @@ function createMember(id,name,email,admin){
     newRow.append(cellDelete);
     newRow.addClass("member");
     newRow.attr('style',"display:table-row;");
-    newRow.attr('id',id);
+    newRow.attr('id',uid);
     return newRow;
 }
 
 /**
  * add a user as member to the group
- * @param int id of the user
+ * @param int uid of the user
  */
-function addMember(id){
+function addMember(uid){
     //TODO get member from DB
     //TODO save member to group
     var tbody = self.memberlist.children('tbody');
@@ -316,6 +369,9 @@ function addMember(id){
     tbody.append(self.createMember(1,"memasdf","bla@fuu",false));
 }
 
+/**
+ * add top content actions
+ */
 function topContent(){
     self.newGroupButton.click(function(){
         self.newGroup();
@@ -333,12 +389,19 @@ function topContent(){
     });
 }
 
+/**
+ * add left content actions
+ */
+
 function leftContent(){
 }
 
+/**
+ * add right content actions
+ */
 function rightContent(){
     self.userSearchInput.keypress(function(event){
-        //TODO
+        // TODO db query
         self.getUsers(self.userSearchInput.attr('value'));
     });
     //text disappear if user click into that field
@@ -347,30 +410,19 @@ function rightContent(){
     });
 }
 
-// define all actions for the buttons and textfields etc.
+/**
+ * define all actions for the buttons and textfields etc.
+ */
 function regActions(){
     topContent();
     leftContent();
     rightContent();
-    
-}
-
-function init(){
-    this.self = this;
-    self.newGroupButton=$("#newGroupButton");
-    self.newGroupField=$("#newGroupField");
-    self.grouplist=$("#grouplist");
-    self.userSearchResult=$("#userSearchResult");
-    self.userSearchInput=$("#userSearchInput");
-    self.memberlist=$("#memberlist");
-    self.notifyCreation=$("#notifyCreation");
-    self.newGroupText=$("#newGroupText");
 }
 
 $(document).ready(function () {
     // be sure that all routes from /appinfo/routes.php are loaded
 	OC.Router.registerLoadedCallback(function(){
-	   console.log("blub");
+	   self.debugLog("start groupmanager");
 	   init();
 	   regActions();
     });

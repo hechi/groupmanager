@@ -12,5 +12,6 @@
 "Autocompletion" => "Autovervollständigung",
 "Search Users" => "Suche Benutzer",
 "Groupname" => "Gruppenname",
-"please enter a new group name" => "Bitte geben Sie einen neuen Gruppennamen ein"
+"please enter a new group name" => "Bitte geben Sie einen neuen Gruppennamen ein",
+"group name already taken" => "Gruppenname bereits vergeben"
 );
