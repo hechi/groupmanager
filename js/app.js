@@ -134,6 +134,17 @@ function debugLog(msg){
     console.log("Groupmanager: "+msg);
 }
 
+function removeGroup(id,element){
+    //TODO: remove group from db with ID
+    element.remove();
+}
+
+function removeMember(id,element){
+    //TODO: remove member from group on db
+    //TODO: check if there is  at least one member left
+    element.remove();
+}
+
 /**
  * if the button 'New Group' is pressed
  */
@@ -146,8 +157,8 @@ function newGroup(){
  * TODO: call pagecontroller
  */
 function createGroup(){
-    if(self.checkGroupname()){
-        self.grouplist.append(self.createLiElement(self.newGroupField.attr('value')));
+    if(self.checkGroupname()&&self.newGroupField.attr('value')!=""){
+        self.grouplist.append(self.createLiElement(0,self.newGroupField.attr('value')));
         self.debugLog("create group "+self.newGroupField.attr('value'));
     }else{
         self.displayFail();
@@ -164,10 +175,13 @@ function translate(msg){
 }
 
 /**
- *
+ * create a li element for the leftcontent
+ * @param int id of the group
+ * @param string groupname which should be displayed
+ * @return li object
  */
  //<a href="#" class="svg delete action" original-title="{{trans('Delete')}}"></a>
-function createLiElement(groupname){
+function createLiElement(id,groupname){
     var newLiElement = $('<li>');
     var newTextField = $('<textfield>');
     var removeIcon = $('<a>');
@@ -177,7 +191,8 @@ function createLiElement(groupname){
     removeIcon.addClass("action");
     removeIcon.attr('original-title',translate('Delete'));
     removeIcon.click(function(){
-        alert("remove group "+groupname);
+        //TODO ask if you are sure
+        self.removeGroup(id,newLiElement);
     });    
     newLiElement.append(newTextField);
     newLiElement.append(removeIcon);
@@ -203,6 +218,8 @@ function checkGroupname(groupname){
  */
 function getUsers(username){
     //TODO get users with the spezial characters form the DB
+    //remove alle child elements with the class userBox
+    self.userSearchResult.children(".userBox").remove();
     self.userSearchResult.append(createUser(0,"mem1"));
     self.userSearchResult.append(createUser(1,"mem2"));
 }
@@ -272,6 +289,7 @@ function createMember(id,name,email,admin){
         removeIcon.attr('original-title',translate('Delete'));
         removeIcon.click(function(){
             alert("remove member "+id);
+            self.removeMember(id,newRow);
         });
         cellDelete.append(removeIcon);
     }       
