@@ -1,10 +1,16 @@
 <!-- head panel to create new groups -->
-<div id="controls">
-	<div class="input" id="inputNewGroup">
-	    <button class="button addGroup" id="newGroupButton">{{trans('New Group')}}</button>
-	    <input class="hidden addGroup" type="text" tabindex="0" id="newGroupField" value="{{trans('Groupname')}}"></input>
+<div class="controls">
+	<div class="input" id="newGroupButton">
+	    <button class="button" id="newGroupButton">{{trans('New Group')}}</button>
+    </div>
+    <div class="hidden" id="expandNewGroup">
+	    <input class="addGroup" type="text" tabindex="0" id="newGroupField" value="{{trans('Groupname')}}"></input>
 	    <img class="hidden addGroup" id="notifyCreation" alt="NotifyError" ></img>
-	    <textfield class="hidden addGroup" id="newGroupText">{{trans('please enter a new group name')}}</textfield>
+	    <textfield class="addGroup" id="newGroupText">{{trans('please enter a new group name')}}</textfield>
+	    <br>
+        <textarea class="addGroup" cols="10" rows="1" id="description">{{trans('Description')}}</textarea>
+        <br>
+        <button class="button addGroup" id="newGroupOk">{{trans('Ok')}}</button><button class="button" id="newGroupCancle">{{trans('Cancle')}}</button>
     </div>
 </div>
 <!-- the left list of groups, where the user is member of -->

@@ -56,6 +56,36 @@
         padding-bottom: 1em;
 }
 
+.controls {
+    position: fixed;
+    height: 2.8em;
+    width: 100%;
+    padding: 0px 70px 0px 0.5em;
+    margin: 0px;
+    -moz-box-sizing: border-box;
+    box-shadow: 0px -3px 7px rgb(0, 0, 0);
+    background: none repeat scroll 0% 0% rgb(238, 238, 238);
+    border-bottom: 1px solid rgb(231, 231, 231);
+    z-index: 50;
+}
+
+#expandNewGroup {
+    position: fixed;
+    height: 11em;
+    width: 100%;
+    padding: 0px 70px 0px 0.5em;
+    margin: 0px;
+    margin-left:-5px;
+    margin-top:-36px;
+    /*margin-left:10px;*/
+    /*margin-top:36px;*/
+    -moz-box-sizing: border-box;
+    box-shadow: 0px -3px 7px rgb(0, 0, 0);
+    background: none repeat scroll 0% 0% rgb(238, 238, 238);
+    border-bottom: 1px solid rgb(231, 231, 231);
+    z-index: 51;
+}
+
 .userSearch {
     position: relative; 
     margin-top:10px;

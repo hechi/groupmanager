@@ -1,6 +1,7 @@
 <?php $TRANSLATIONS = array(
 "New Group" => "Neue Gruppe",
 "Cancle" => "Abbruch",
+"Ok" => "Ok",
 "Groupname" => "Gruppenname",
 "Members" => "Mitglieder",
 "Groupadmin" => "Gruppenleiter",

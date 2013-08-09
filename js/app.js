@@ -35,6 +35,8 @@ var userSearchInput;
 var memberlist;
 var notifyCreation;
 var newGroupText;
+var expandNewGroup;
+var newGroupButton;
 
 /*********** STATUS-FLAGS for notification of creating process ***********/
 var ERROR = -2;     // an error appears
@@ -58,6 +60,10 @@ function init(){
     self.memberlist=$("#memberlist");
     self.notifyCreation=$("#notifyCreation");
     self.newGroupText=$("#newGroupText");
+    self.expandNewGroup=$("#expandNewGroup");
+    self.newGroupOk=$("#newGroupOk");
+    self.newGroupCancle=$("#newGroupCancle");
+    self.newGroupButton=$("#newGroupButton");
 }
 
 // serialize a list to a jsonstring
@@ -143,6 +149,13 @@ function displayLoading(){
 }
 
 /**
+ * show the dialog to add group
+ */
+function displayNewGroupDialog(){
+    self.expandNewGroup.fadeIn("fast");
+}
+
+/**
  * hide text on the top
  */
 function hideNewGroupText(){
@@ -157,14 +170,21 @@ function hideNotify(){
 }
 
 /**
- * hide newGroup Button, display input field and display description text
+ * hide new group dialog
  */
+function hideNewGroupDialog(){
+    self.expandNewGroup.fadeOut("fast");
+}
+
+/**
+ * hide newGroup Button, display input field and display description text
 function displayNewGroupInput(){
     self.newGroupButton.addClass("hidden");
     self.newGroupButton.removeClass("button");
     self.newGroupField.removeClass("hidden");
     self.newGroupText.removeClass("hidden");
 }
+ */
 
 /**
  * only for debug informations
@@ -201,7 +221,7 @@ function removeMember(uid,element){
  * if the button 'New Group' is pressed display the input field and description
  */
 function newGroup(){
-    self.displayNewGroupInput();
+    self.displayNewGroupDialog();
 }
 
 /**
@@ -375,6 +395,9 @@ function addMember(uid){
 function topContent(){
     self.newGroupButton.click(function(){
         self.newGroup();
+        self.debugLog("show newGroup");
+        
+        self.displayNewGroupDialog();
     });
     self.newGroupField.keypress(function(event){
         if(event.which==KEY_ENTER){
@@ -386,6 +409,14 @@ function topContent(){
     //text disappear if user click into that field
     self.newGroupField.click(function(){
         self.newGroupField.attr('value','');
+    });
+    //cancle button fade out the new group dialog
+    self.newGroupCancle.click(function(){
+        self.hideNewGroupDialog();
+    });
+    self.newGroupOk.click(function(){
+        self.createGroup();
+        self.hideNewGroupDialog();
     });
 }
 
@@ -422,8 +453,8 @@ function regActions(){
 $(document).ready(function () {
     // be sure that all routes from /appinfo/routes.php are loaded
 	OC.Router.registerLoadedCallback(function(){
-	   self.debugLog("start groupmanager");
 	   init();
+	   self.debugLog("start groupmanager");
 	   regActions();
     });
 });
