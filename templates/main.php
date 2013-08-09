@@ -1,8 +1,6 @@
 <!-- head panel to create new groups -->
 <div class="controls">
-	<div class="input" id="newGroupButton">
-	    <button class="button" id="newGroupButton">{{trans('New Group')}}</button>
-    </div>
+	<button class="button" id="newGroupButton">{{trans('New Group')}}</button>
     <div class="hidden" id="expandNewGroup">
 	    <input class="addGroup" type="text" tabindex="0" id="newGroupField" value="{{trans('Groupname')}}"></input>
 	    <img class="hidden addGroup" id="notifyCreation" alt="NotifyError" ></img>
@@ -31,7 +29,12 @@
 <div id="rightcontent">
 	<!-- filled by the /js/app.js -->
 	<div id="userSearchResult" class="userSearch">
-	    <input id="userSearchInput" class="svg" value="{{trans('Search Users')}}" type="search"/></input>
+	    <input id="userSearchInput" class=" svg" value="{{trans('Search Users')}}" type="search"/></input>
+	</div>
+	<div id="expandDescription">
+	    <img id="expandPic" class="action" alt="{{trans('expand for description')}}"/>
+	    <textarea id="groupdescription" class="modDescription  hidden" cols="100" rows="1">{{trans('Description')}}</textarea>
+	    <button id="groupdescriptionsave" class="modDescription  hidden">{{trans('Save')}}</button>
 	</div>
 	<table id="memberlist">
         <thead>

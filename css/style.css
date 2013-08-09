@@ -35,7 +35,7 @@
 
 #rightcontent, .rightcontent { 
     position:auto;
-    width:100%;
+    width:77%;
     top:6.4em;
     left:25em; 
     overflow:auto
@@ -67,6 +67,26 @@
     background: none repeat scroll 0% 0% rgb(238, 238, 238);
     border-bottom: 1px solid rgb(231, 231, 231);
     z-index: 50;
+}
+
+
+#userSearchInput, .modDescription{
+    margin-left:10px;
+}
+
+#expandDescription{
+    display:block;
+    border-bottom: 1px solid #DDDDDD;
+}
+#expandPic{
+    display: block;   
+    margin-left: auto;   
+    margin-right: auto;
+}
+
+#groupdescription{
+    width:95%;
+
 }
 
 #expandNewGroup {
@@ -133,19 +153,31 @@
     height:20px;
 }
 
-#memberlist { }
-#memberlist > thead > tr > td { padding-left:10px;}
+/* MEMBERLIST (TABLE)*/
+#memberlist { 
+    width:100%;
+    position:auto;
+}
+#memberlist > thead > tr {
+    width:100%; 
+    position:auto;
+}
+
+#memberlist > thead > tr > td {
+    position:auto;
+    padding-left:10px;
+}
+
 #memberlist > tbody {
-    position: relative;
-    padding-bottom: 300px;
     width: 100%;
+    padding-bottom: 300px;
     z-index: 1;
 }
-#memberlist { margin-top:20px; position: relative; width: 75%; }
+#memberlist { }
 #memberlist td {
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
-#memberlist > tbody > tr.member { height: 3em; display: none; }
+#memberlist > tbody > tr.member { height: 3em;  }
 #memberlist > tbody > tr.member.active, #memberlist tr:hover { background-color: #eee; }
 #memberlist > tbody > tr > td {
     border-bottom: 1px solid #DDDDDD;
@@ -173,13 +205,12 @@
 }
 #memberlist tbody > tr > td.name {
     position:relative; 
-    font-weight: bold; /*text-indent: 1.6em;*/
+    font-weight: bold; 
     padding-left:10px;
     -webkit-transition:background-image 500ms; -moz-transition:background-image 500ms; -o-transition:background-image 500ms; transition:background-image 500ms;
     background-repeat:no-repeat !important;
     background-position: 10px center !important;
 }
-
 /*
 .no-svg .delete {background-image:url('%webroot%/core/img/actions/delete.png'); }
 .svg .delete {background-image:url('%webroot%/core/img/actions/delete.svg'); }
@@ -187,7 +218,7 @@ a.action.delete{background-image:url('%webroot%/core/img/actions/delete.png');}
 */
 
 #memberlist tbody > tr > td .delete {
-    display:inline-block;
+    display:block;
     position: absolute;
     cursor:pointer;
     margin:-6px;
@@ -203,20 +234,18 @@ a.action.delete{background-image:url('%webroot%/core/img/actions/delete.png');}
     padding: 0px;
     z-index: 200;
 }
-
 #member {
+    width: 100%;
     background-color: white; color: #333333;
     border-radius: 3px; box-shadow: 0 0 10px #888888;
     padding: 10px;
     position: fixed !important;
     z-index: 101;
     top: 8em; left: 28em;
-    width: 100%;
 }
-
-/* GROUPLIST */
+/* GROUPLIST LEFTCONTENT*/
 #grouplist, .grouplist {
-    position:relative; overflow:auto; width:20em; height:100%;
+    position:relative; overflow:auto; width:20%; height:100%;
     background:#f8f8f8; border-right:1px solid #ddd;
     -moz-box-sizing:border-box; box-sizing:border-box;
 }
@@ -251,15 +280,4 @@ a.action.delete{background-image:url('%webroot%/core/img/actions/delete.png');}
 }
 
 #grouplist a { height:100%; display:block; margin:0; padding:0 1em 0 0; float:right; }
-
-/*
-#grouplist > ul > li.group.a *.delete {
-    position: absolute;
-    cursor:pointer;
-    width:16px; height:16px; 
-    background-image:url('%webroot%/core/img/actions/delete.png'); 
-    background-position:right top;
-    z-index:100;
-}
-*/
 

@@ -37,6 +37,11 @@ var notifyCreation;
 var newGroupText;
 var expandNewGroup;
 var newGroupButton;
+var expandDescription;
+var expandPic;
+var groupdescription;
+var groupdescriptionsave;
+var modDescription;
 
 /*********** STATUS-FLAGS for notification of creating process ***********/
 var ERROR = -2;     // an error appears
@@ -52,6 +57,7 @@ var KEY_ENTER = 13;
  */
 function init(){
     this.self = this;
+    //ids
     self.newGroupButton=$("#newGroupButton");
     self.newGroupField=$("#newGroupField");
     self.grouplist=$("#grouplist");
@@ -64,6 +70,12 @@ function init(){
     self.newGroupOk=$("#newGroupOk");
     self.newGroupCancle=$("#newGroupCancle");
     self.newGroupButton=$("#newGroupButton");
+    self.expandDescription=$("#expandDescription");
+    self.expandPic=$("#expandPic");
+    self.groupdescription=$("#groupdescription");
+    self.groupdescriptionsave=$("#groupdescriptionsave");
+    //class definitions
+    self.modDescription=$(".modDescription");
 }
 
 // serialize a list to a jsonstring
@@ -177,16 +189,6 @@ function hideNewGroupDialog(){
 }
 
 /**
- * hide newGroup Button, display input field and display description text
-function displayNewGroupInput(){
-    self.newGroupButton.addClass("hidden");
-    self.newGroupButton.removeClass("button");
-    self.newGroupField.removeClass("hidden");
-    self.newGroupText.removeClass("hidden");
-}
- */
-
-/**
  * only for debug informations
  * @param string msg print msg text on console.log
  */
@@ -231,7 +233,7 @@ function newGroup(){
  */
 function createGroup(){
     if(self.checkGroupname()&&self.newGroupField.attr('value')!=""){
-        self.grouplist.append(self.createLiElement(0,self.newGroupField.attr('value')));
+        self.grouplist.append(self.createLiElement(0,self.newGroupField.attr('value'),true));
         self.debugLog("create group "+self.newGroupField.attr('value'));
     }else{
         self.displayNotValid();
@@ -253,21 +255,23 @@ function translate(msg){
  * @param string groupname which should be displayed
  * @return li object
  */
-function createLiElement(gid,groupname){
+function createLiElement(gid,groupname,admin){
     var newLiElement = $('<li>');
     var newTextField = $('<textfield>');
-    var removeIcon = $('<a>');
-    newTextField.text(groupname);
-    removeIcon.addClass("svg");
-    removeIcon.addClass("delete");
-    removeIcon.addClass("action");
-    removeIcon.attr('original-title',translate('Delete'));
-    removeIcon.click(function(){
-        //TODO ask if you are sure
-        self.removeGroup(gid,newLiElement);
-    });    
+    if(admin){
+        var removeIcon = $('<a>');
+        newTextField.text(groupname);
+        removeIcon.addClass("svg");
+        removeIcon.addClass("delete");
+        removeIcon.addClass("action");
+        removeIcon.attr('original-title',translate('Delete'));
+        removeIcon.click(function(){
+            //TODO ask if you are sure
+            self.removeGroup(gid,newLiElement);
+        });    
+        newLiElement.append(removeIcon);
+    }
     newLiElement.append(newTextField);
-    newLiElement.append(removeIcon);
     newLiElement.addClass("group");
     return newLiElement;
 }
@@ -439,6 +443,31 @@ function rightContent(){
     self.userSearchInput.click(function(){
         self.userSearchInput.attr('value','');
     });
+    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-n.png'));
+    self.expandPic.attr('value','close');
+    self.expandDescription.height(self.expandPic.height());
+    self.expandDescription.click(function(){
+        if(self.expandPic.attr('value')=='close'){
+            self.expand();
+            self.expandPic.attr('value','open');
+        }else{     
+            self.contract();
+            self.expandPic.attr('value','close');
+        }
+    });
+    
+}
+
+function expand(){
+    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-s.png'));
+    self.expandDescription.height(self.expandDescription.height()+self.groupdescription.height()+self.groupdescriptionsave.height()+50);
+    self.modDescription.removeClass('hidden');
+}
+
+function contract(){
+    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-n.png'));
+    self.expandDescription.height(self.expandPic.height());
+    self.modDescription.addClass('hidden');    
 }
 
 /**
