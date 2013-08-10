@@ -178,7 +178,7 @@ class Group {
 
     /**
      * put all information in an array and give it back
-     * @return array with groupid groupname member groupadmin description
+     * @return array with groupid groupname member groupadmin description (associative array)
      */        
 	public function getProperties(){
 	        return array('groupid' => $this->groupid, 

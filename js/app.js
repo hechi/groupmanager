@@ -222,6 +222,19 @@ function debugLog(msg){
  * @param HTMLobject element a HTML element where the remove method can be called
  */
 function removeGroup(gid,element){
+    GROUPDB.getGroupWithId(gid,function(group){
+        if(group.isUserAdmin(OC.currentUser)){
+            GROUPDB.removeGroup(gid);
+            $(document).find('.tipsy').hide();
+            element.remove();
+            self.hideRightContent();
+        }else{
+            //TODO
+            alert("you dont have the permission to delete this group");
+        }
+    });
+
+/*
     if(GROUPDB.getGroupWithId(gid).isUserAdmin(OC.currentUser)){
         GROUPDB.removeGroup(gid);
         $(document).find('.tipsy').hide();
@@ -231,6 +244,7 @@ function removeGroup(gid,element){
         //TODO
         alert("you dont have the permission to delete this group");
     }
+*/
 }
 
 /**
@@ -245,11 +259,19 @@ function removeMember(uid,element){
         //if the member is not a admin, then remove it, else it must be two admins
         //left in the group to remove one
         if(self.memberlist.find('input:checked').length>1 || element.find('input:checked').length==0){
+            GROUPDB.removeMember(self.getSelectedGroupid(),uid,function(result){
+                if(result){
+                    $(document).find('.tipsy').hide();//TODO tipsy does not remove
+                    element.remove();
+                }
+            });
+            /*
             var result = GROUPDB.removeMember(self.getSelectedGroup().getGroupid(),uid);
             if(result){
                 $(document).find('.tipsy').hide();//TODO tipsy does not remove
                 element.remove();
             }
+            */
         }else{
             //TODO
             alert("can not remove all admin members");
@@ -273,12 +295,23 @@ function newGroup(){
  * the HTML element with the groupid
  */
 function createGroup(){
-    if(self.checkGroupname()&&self.newGroupField.attr('value')!=""){
-        var resultGroupid=GROUPDB.saveGroup(self.newGroupField.attr('value'),new Array(new Array(OC.currentUser,true)),self.newDescription.val(),OC.currentUser);
-        self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
-        self.debugLog("create group "+self.newGroupField.attr('value'));
-    }else{
-        self.displayNotValid();
+    self.debugLog("create Group");
+    if(self.newGroupField.attr('value')!=""){
+        GROUPDB.isGroupnameValid(self.newGroupField.attr('value'),function(valid){
+            if(valid){
+                GROUPDB.saveGroup(self.newGroupField.attr('value'),new Array(new Array(OC.currentUser,true)),self.newDescription.val(),OC.currentUser,function(resultGroupid){
+                    self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
+                    self.debugLog("create group "+self.newGroupField.attr('value'));
+                });
+                /*
+                var resultGroupid=GROUPDB.saveGroup(self.newGroupField.attr('value'),new Array(new Array(OC.currentUser,true)),self.newDescription.val(),OC.currentUser);
+                self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
+                self.debugLog("create group "+self.newGroupField.attr('value'));
+                */
+            }else{
+                self.displayNotValid();
+            }
+        });
     }
 }
 
@@ -346,9 +379,18 @@ function selectGroup(element){
 /**
  * get the selected group
  * @return Group object of the selected Group
- */
 function getSelectedGroup(){
+//TODO think think think
+    console.log("mist");
     return GROUPDB.getGroupWithId(self.grouplist.find('.active').attr('id'));
+}
+ */
+/**
+ * get the selected group
+ * @return Group object of the selected Group
+ */
+function getSelectedGroupid(){
+    return self.grouplist.find('.active').attr('id');
 }
 
 /**
@@ -356,27 +398,38 @@ function getSelectedGroup(){
  * @param int gid groupid which should be loaded at the right side
  */
 function loadGroup(gid){
-    self.clearRightContent();
-    self.debugLog("load group "+gid);
-    var group=self.getSelectedGroup();
-    var memberList=group.getListOfMembers();
-    self.debugLog("memberlist size? "+memberList.length);
-    for(var i=0;i<memberList.length;i++){
-        var member = GROUPDB.getUser(memberList[i][0]);
-        self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
-        self.debugLog("add user "+member.uid+" to group "+group.getGroupname());
-    }
-    self.groupdescription.val(group.getDescription());
-    if(group!=null&&group.isUserAdmin(OC.currentUser)){
-        self.groupdescriptionsave.click(function(){
-            self.saveDescription(group.getGroupid());
-        });
-        self.groupdescription.removeAttr('readonly');
-        self.groupdescriptionsave.removeAttr('disabled');
-    }else{
-        self.groupdescription.attr('readonly','readonly');
-        self.groupdescriptionsave.attr('disabled', 'disabled');
-    }
+    GROUPDB.getGroupWithId(self.getSelectedGroupid(),function(group){
+        self.clearRightContent();
+        self.debugLog("load group "+gid);
+        var memberList=group.getListOfMembers();
+        self.debugLog("memberlist size? "+memberList.length);
+        for(var i=0;i<memberList.length;i++){
+            GROUPDB.getUser(memberList[i][0],function(member){
+                if(member!=null){
+                    self.debugLog("add user "+member.uid+" to group "+group.getGroupname());
+                    self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
+                }
+            });
+        /*
+            var member = GROUPDB.getUser(memberList[i][0]);
+            if(member!=null){
+                self.debugLog("add user "+member.uid+" to group "+group.getGroupname());
+                self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
+            }
+        */
+        }
+        self.groupdescription.val(group.getDescription());
+        if(group!=null&&group.isUserAdmin(OC.currentUser)){
+            self.groupdescriptionsave.click(function(){
+                self.saveDescription(group.getGroupid());
+            });
+            self.groupdescription.removeAttr('readonly');
+            self.groupdescriptionsave.removeAttr('disabled');
+        }else{
+            self.groupdescription.attr('readonly','readonly');
+            self.groupdescriptionsave.attr('disabled', 'disabled');
+        }
+    });
 }
 
 /**
@@ -392,8 +445,19 @@ function clearRightContent(){
  * @param string characters of the groupname
  * @return boolean true if the groupname is valid
  */
+/*
 function checkGroupname(groupname){
     self.notifyGroupCreation(self.CHECKING);
+    GROUPDB.isGroupnameValid(groupname,function(valid){
+        if(valid){
+            self.notifyGroupCreation(self.OK);
+            return true;        
+        }else{
+            self.notifyGroupCreation(self.NOTVALID);
+            return false;
+        }
+    });
+    /*
     var valid=GROUPDB.isGroupnameValid(groupname);
     if(valid){
         self.notifyGroupCreation(self.OK);
@@ -403,6 +467,7 @@ function checkGroupname(groupname){
         return false;
     }
 }
+*/
 
 /**
  * get users that matches the string in the userSearchResult field
@@ -410,8 +475,22 @@ function checkGroupname(groupname){
  */
 function getUsers(username){
     //remove all child elements with the class userBox
-    self.userSearchResult.children(".userBox").remove();
+    GROUPDB.getUsersWith(username,function(userList){
+        self.userSearchResult.children(".userBox").remove();
+        for(var i = 0;i<userList.length&&i<=6;i++){
+            if(i>=6){
+                var moreUser = $('<textfield>');
+                moreUser.text("to many users...");
+                moreUser.addClass("userBox");
+                self.userSearchResult.append(moreUser);
+            }else{
+                self.userSearchResult.append(createUser(userList[i].uid,userList[i].displayname));
+            }
+        }
+    });
+    /*
     var userList = GROUPDB.getUsersWith(username);
+    self.userSearchResult.children(".userBox").remove();
     for(var i = 0;i<userList.length&&i<=6;i++){
         if(i>=6){
             var moreUser = $('<textfield>');
@@ -422,6 +501,7 @@ function getUsers(username){
             self.userSearchResult.append(createUser(userList[i].uid,userList[i].displayname));
         }
     }
+    */
 }
 
 /**
@@ -436,15 +516,17 @@ function createUser(uid,name){
     newTextField.text(name);
     newTextField.addClass("userBox");
     newTextField.click(function(){
-        if(self.getSelectedGroup().isUserAdmin(OC.currentUser)){
-            self.addMember(uid,false,true);
-            if(self.getSelectedGroup().isMember(uid)){
-                //TODO
-                alert("user is already member of this group");
-            }else{
-                GROUPDB.addMember(self.getSelectedGroup().getGroupid(),uid,false);
+        GROUPDB.getGroupWithId(self.getSelectedGroupid(),function(group){
+            if(group.isUserAdmin(OC.currentUser)){
+                self.addMember(uid,false,true);
+                if(group.isMember(uid)){
+                    //TODO
+                    alert("user is already member of this group");
+                }else{
+                    GROUPDB.addMember(group.getGroupid(),uid,false);
+                }
             }
-        }
+        });
     });
     return newTextField;
 }
@@ -453,7 +535,7 @@ function createUser(uid,name){
  *
  */
 function modifyMember(uid,permission){
-    GROUPDB.modifyMember(self.getSelectedGroup().getGroupid(),uid,permission);
+    GROUPDB.modifyMember(self.getSelectedGroupid(),uid,permission);
 }
 
 /**
@@ -540,11 +622,19 @@ function createMember(uid,name,email,admin,adminPermission){
  * @param bool adminPermission did the current user have the permission to change the group preferences
  */
 function addMember(uid,admin,adminPermission){
+    GROUPDB.getUser(uid,function(member){
+        var tbody = self.memberlist.children('tbody');
+        if(tbody.find('#'+uid).length<1){
+            tbody.append(self.createMember(member.uid,member.displayname,member.email,admin,adminPermission));
+        }
+    });
+/*
     var member = GROUPDB.getUser(uid);
     var tbody = self.memberlist.children('tbody');
     if(tbody.find('#'+uid).length<1){
         tbody.append(self.createMember(member.uid,member.displayname,member.email,admin,adminPermission));
     }
+*/
 }
 
 /**
@@ -578,11 +668,22 @@ function contract(){
  * get groups from this user and add these groups to the leftcontent
  */
 function getGroups(){
+    GROUPDB.getGroups(OC.currentUser,function(list){
+        if(list!=null){
+            //TODO print init page on right side?
+            for(var i=0;i<list.length;i++){
+                self.addGroup(list[i]);
+                self.debugLog("add group "+list[i].getGroupname());
+            }
+        }
+    });
+/*
     var list=GROUPDB.getGroups(OC.currentUser);
     for(var i=0;i<list.length;i++){
         self.addGroup(list[i]);
         self.debugLog("add group "+list[i].getGroupname());
     }
+*/
 }
 
 /**
@@ -599,7 +700,17 @@ function topContent(){
         if(event.which==KEY_ENTER){
             self.createGroup();
         }else{
+            self.notifyGroupCreation(self.CHECKING);
+            GROUPDB.isGroupnameValid(self.newGroupField.attr('value'),function(valid){
+                if(valid){
+                    self.notifyGroupCreation(self.OK);
+                }else{
+                    self.notifyGroupCreation(self.NOTVALID);
+                }
+            });
+        /*
             self.checkGroupname(self.newGroupField.attr('value'));
+        */
         }
     });
     //text disappear if user click into that field

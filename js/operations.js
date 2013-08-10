@@ -32,7 +32,93 @@ function User(uid,displayname,email){
     this.email=email;
 }
 
+/**
+ * send a html request and take the result as a json object
+ * @param string the requested link
+ * @param json values that append the request
+ * @result json if the request was successful 
+ */
+function getJsonQuery(request,jsonParam){
+    console.log("build request");
+    var getUrl=null;
+    if(jsonParam==null){
+        getUrl = OC.Router.generate(request);
+    }else{
+        getUrl = OC.Router.generate(request,jsonParam);
+    }
+    console.log("call: "+getUrl);
+    console.log("param: "+jsonParam);
+    var ret = null;
+    $.post(getUrl,function(result){
+        if(result.status=='success'){
+            ret=result.data;
+        }
+    },"json");
+    return ret;
+}
+
 var GROUPDB={
+    /**
+     * setup the connection to the pagecontroller
+     */
+    init:function(){
+        GROUPDB_Dummy.init();
+    },
+    getGroups:function(uid,callback){
+        console.log("query to DB");
+        var result = getJsonQuery('getGroups',null);
+        console.log(result);
+        console.log("done");
+        if (callback && typeof(callback) === "function") {  
+            callback(result);  
+        }
+    },
+    //TODO callback
+    getGroupWithId:function(gid,callback){
+        var result = GROUPDB_Dummy.getGroupWithId(gid);
+        callback(result);
+    },
+    saveDescription:function(gid,description){
+        GROUPDB_Dummy.saveDescription(gid,description);
+    },
+    //TODO callback
+    saveGroup:function(groupname,listOfMembers,groupdescription,admin,callback){
+        console.log("save group");
+        var result = GROUPDB_Dummy.saveGroup(groupname,listOfMembers,groupdescription,admin);
+        callback(result);
+    },
+    removeGroup:function(gid){
+        GROUPDB_Dummy.removeGroup(gid);
+    },
+    addMember:function(gid,uid,adminPermission){
+        GROUPDB_Dummy.addMember(gid,uid,adminPermission);
+    },
+    modifyMember:function(gid,uid,adminPermission){
+        GROUPDB_Dummy.modifyMember(gid,uid,adminPermission);
+    },
+    //TODO callback
+    removeMember:function(gid,uid,callback){
+        GROUPDB_Dummy.removeMember(gid,uid);
+        callback(true);
+    },
+    //TODO callback
+    getUser:function(uid,callback){
+        var result = GROUPDB_Dummy.getUser(uid);
+        callback(result);
+    },
+    //TODO callback
+    isGroupnameValid:function(groupname,callback){
+        var result = GROUPDB_Dummy.isGroupnameValid(groupname);
+        callback(result)
+    },
+    //TODO callback
+    getUsersWith:function(uid,callback){
+        var result = GROUPDB_Dummy.getUsersWith(uid);
+        callback(result);
+    }
+};
+
+var GROUPDB_Dummy={
     
     /**
      * TODO
@@ -54,7 +140,7 @@ var GROUPDB={
     },
     getGroupWithId:function(gid){
         //TODO
-        return GROUPDB.getGroups()[gid];
+        return GROUPDB_Dummy.getGroups()[gid];
     },
     saveDescription:function(gid,description){
         //TODO
@@ -74,6 +160,7 @@ var GROUPDB={
     addMember:function(gid,uid,adminPermission){
         //TODO
         console.log("add "+uid+" to group "+gid+" with adminPermissions? "+adminPermission);
+        GROUPDB_Dummy.getGroupWithId(gid).getListOfMembers().push(uid,adminPermission);
     },
     modifyMember:function(gid,uid,adminPermission){
         console.log("modify "+uid+" in group "+gid+" with adminPermissions? "+adminPermission);

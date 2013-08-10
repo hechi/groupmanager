@@ -43,3 +43,10 @@ $this->create('groupmanagerIndex', '/')->action(
     }
 );
 
+$this->create('getGroups', '/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'getGroups', $params, new DIContainer());
+    }
+);
+

@@ -46,5 +46,38 @@ class GroupMapper extends Mapper {
 		$this->tableName = '*PREFIX*groupmanager_groups';
 		$this->tableMember = '*PREFIX*groupmanager_members';
 	}
+	
+	/**
+	 * get all groups where the user is member of
+	 * @param int uid userid 
+	 * @return array with group objects
+     */
+    public function getGroups($uid){
+        // get all group ids where the user is member
+        $sqlGroupids = 'SELECT groupid FROM `'.$this->tableMember.'`
+                        WHERE `userid` = ?';
+        $uidPara = array(uid);
+        $result = $this->execute($sqlGroupids,$uidPara);
+        
+        $selectedGroupids=array();
+        // extract groupid from the db query and save it
+        while($entry = $result->fetchRow()){
+            if(!in_array($row['groupid'],$selectedGroupids)){
+                array_push($selectedGroupids,$row['groupid']);
+            }
+        }
+        // prepare sql state to get every group information
+        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+                WHERE `groupid = ?`';
+        $group = array();
+        // get each group with the extracted groupid
+        foreach($selectedGroupids as $groupid){
+            $params = array($groupid);
+            $result = $this->execute($sql,$params);
+            $entity = new Group($result->fetchRow());
+            array_push($group,$entity);
+        }
+        return $group;
+    }
 
 }

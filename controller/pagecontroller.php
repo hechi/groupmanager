@@ -33,6 +33,7 @@ use \OCA\AppFramework\Core\API;
 use \OCA\AppFramework\Http\Request;
 
 // import the Group, that represents the Entry in the database
+use OCA\Groupmanager\Db\Groupmapper;
 use OCA\Groupmanager\Db\Group;
 
 class PageController extends Controller {
@@ -40,15 +41,18 @@ class PageController extends Controller {
     /* Attribute */
 //    private $itemController;
 //    private $itemMapper;
+    private $groupmapper;
 
     /**
      * Constructor of the PageController
      * initialize the attribute
+     * TODO
      */
     public function __construct($api, $request){
         parent::__construct($api, $request);
         
         //$this->initAdminSettings();
+        $this->groupmapper = new Groupmapper($api);
     }
     
     /**
@@ -87,5 +91,26 @@ class PageController extends Controller {
 		// paint/render the the template with parameters on the website
 		return $this->render($templateName, $params);
     }
-	
+    
+    /**
+     * Get all groups where the user is a member or admin
+	 * 
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+	public function getGroups(){
+	    try{
+	        $groups = $this->groupmapper->getGroups($this->api->getUserId());
+	    }catch(DoesNotExistException $e){
+	        //TODO throw exception
+	    }
+	    //extract all attributes as a associative array, because the 
+	    //renderJSON Method can convert that to a json object
+	    $array = array();
+	    foreach($groups as $group){
+	        array_push($array,$group->getProperties());
+	    }
+	    return $this->renderJSON($array);	
+	}
 }
