@@ -173,14 +173,14 @@ function displayNewGroupDialog(){
 }
 
 /**
- * TODO
+ * show the right content
  */
 function displayRightContent(){
     self.rightcontent.removeClass("hidden");
 }
 
 /**
- * TODO
+ * hide the right content
  */
 function hideRightContent(){
     self.rightcontent.addClass("hidden");
@@ -343,7 +343,8 @@ function selectGroup(element){
 }
 
 /**
- * TODO
+ * get the selected group
+ * @return Group object of the selected Group
  */
 function getSelectedGroup(){
     return GROUPDB.getGroupWithId(self.grouplist.find('.active').attr('id'));
@@ -517,7 +518,6 @@ function createMember(uid,name,email,admin,adminPermission){
         removeIcon.addClass("action");
         removeIcon.attr('original-title',translate('Delete'));
         removeIcon.click(function(){
-            //TODO alert box ? alert("remove member "+uid);
             self.removeMember(uid,newRow);
         });
         cellDelete.append(removeIcon);
@@ -574,7 +574,7 @@ function contract(){
 }
 
 /**
- * TODO
+ * get groups from this user and add these groups to the leftcontent
  */
 function getGroups(){
     var list=GROUPDB.getGroups(OC.currentUser);
