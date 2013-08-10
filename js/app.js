@@ -234,17 +234,21 @@ function removeGroup(gid,element){
 
 /**
  * remove member from group and delete created element where the displayed information
- * are stored on the right side
+ * are stored on the right side, but there must be one admin left
  * @param int uid member id 
  * @param HTMLobject element a HTML element where the remove method can be called
  */
 function removeMember(uid,element){
-    //TODO: check if there is  at least one member left
+    //there must be more than one member left
     if(self.memberlist.find('.member').length>1){
-        var result = GROUPDB.removeMember(self.getSelectedGroup().getGroupid(),uid);
-        if(result){
-            $(document).find('.tipsy').hide();//TODO tipsy does not remove
-            element.remove();
+        //if the member is not a admin, then remove it, else it must be two admins
+        //left in the group to remove one
+        if(self.memberlist.find('input:checked').length>1 || element.find('input:checked').length==0){
+            var result = GROUPDB.removeMember(self.getSelectedGroup().getGroupid(),uid);
+            if(result){
+                $(document).find('.tipsy').hide();//TODO tipsy does not remove
+                element.remove();
+            }
         }else{
             //TODO
             alert("can not remove all admin members");
@@ -491,7 +495,14 @@ function createMember(uid,name,email,admin,adminPermission){
             if($(this).is(':checked')) {
                 self.modifyMember(uid,true);
             }else{
-                self.modifyMember(uid,false);
+                //only take admin permission if there is another admin,
+                //because someone must be the last admin
+                self.debugLog("count admins: "+self.memberlist.find('input:checked').length);
+                if(self.memberlist.find('input:checked').length>=1){
+                    self.modifyMember(uid,false);
+                }else{
+                    $(this).attr('checked','checked');
+                }
             }
         });
     }
