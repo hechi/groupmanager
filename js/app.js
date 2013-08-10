@@ -58,6 +58,7 @@ var KEY_ENTER = 13;
 function init(){
     this.self = this;
     //ids
+    self.rightcontent=$("#rightcontent");
     self.newGroupButton=$("#newGroupButton");
     self.newGroupField=$("#newGroupField");
     self.grouplist=$("#grouplist");
@@ -72,6 +73,7 @@ function init(){
     self.newGroupButton=$("#newGroupButton");
     self.expandDescription=$("#expandDescription");
     self.expandPic=$("#expandPic");
+    self.newDescription=$("#newDescription");
     self.groupdescription=$("#groupdescription");
     self.groupdescriptionsave=$("#groupdescriptionsave");
     //class definitions
@@ -95,6 +97,7 @@ function serializeListToJSON(tagName){
     debugLog(serialized);
     return serialized;
 }
+
 /**
  * @param flag int, status flag. see on the head of this file
  */
@@ -164,7 +167,23 @@ function displayLoading(){
  * show the dialog to add group
  */
 function displayNewGroupDialog(){
+    self.newGroupField.attr('value',self.translate("Groupname"));
+    self.newDescription.val(self.translate("Description"));
     self.expandNewGroup.fadeIn("fast");
+}
+
+/**
+ * TODO
+ */
+function displayRightContent(){
+    self.rightcontent.removeClass("hidden");
+}
+
+/**
+ * TODO
+ */
+function hideRightContent(){
+    self.rightcontent.addClass("hidden");
 }
 
 /**
@@ -203,8 +222,14 @@ function debugLog(msg){
  * @param HTMLobject element a HTML element where the remove method can be called
  */
 function removeGroup(gid,element){
-    //TODO: remove group from db with ID
-    element.remove();
+    if(GROUPDB.getGroupWithId(gid).isUserAdmin(OC.currentUser)){
+        GROUPDB.removeGroup(gid);
+        $(document).find('.tipsy').hide();
+        element.remove();
+    }else{
+        //TODO
+        alert("you dont have the permission to delete this group");
+    }
 }
 
 /**
@@ -214,9 +239,21 @@ function removeGroup(gid,element){
  * @param HTMLobject element a HTML element where the remove method can be called
  */
 function removeMember(uid,element){
-    //TODO: remove member from group on db
     //TODO: check if there is  at least one member left
-    element.remove();
+    if(self.memberlist.find('.member').length>1){
+        var result = GROUPDB.removeMember(self.getSelectedGroup().getGroupid(),uid);
+        if(result){
+            $(document).find('.tipsy').hide();//TODO tipsy does not remove
+            element.remove();
+        }else{
+            //TODO
+            alert("can not remove all admin members");
+        }
+    }else{
+        //TODO print error because only one member left
+        //TODO must have min of one admin
+        alert("can not remove all members");
+    }
 }
 
 /**
@@ -229,11 +266,11 @@ function newGroup(){
 /**
  * create the group via db call and take the groupid from the db to create
  * the HTML element with the groupid
- * TODO: call pagecontroller
  */
 function createGroup(){
     if(self.checkGroupname()&&self.newGroupField.attr('value')!=""){
-        self.grouplist.append(self.createLiElement(0,self.newGroupField.attr('value'),true));
+        var resultGroupid=GROUPDB.saveGroup(self.newGroupField.attr('value'),new Array(new Array(OC.currentUser,true)),self.newDescription.val(),OC.currentUser);
+        self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
         self.debugLog("create group "+self.newGroupField.attr('value'));
     }else{
         self.displayNotValid();
@@ -250,6 +287,14 @@ function translate(msg){
 }
 
 /**
+ * add a group to the leftcontent
+ * @param Group group need a groupobject
+ */
+function addGroup(group){
+    self.grouplist.append(self.createLiElement(group.getGroupid(),group.getGroupname(),group.isUserAdmin(OC.currentUser)));
+}
+
+/**
  * create a li element for the leftcontent
  * @param int gid of the group
  * @param string groupname which should be displayed
@@ -258,9 +303,9 @@ function translate(msg){
 function createLiElement(gid,groupname,admin){
     var newLiElement = $('<li>');
     var newTextField = $('<textfield>');
+    newTextField.text(groupname);
     if(admin){
         var removeIcon = $('<a>');
-        newTextField.text(groupname);
         removeIcon.addClass("svg");
         removeIcon.addClass("delete");
         removeIcon.addClass("action");
@@ -272,33 +317,105 @@ function createLiElement(gid,groupname,admin){
         newLiElement.append(removeIcon);
     }
     newLiElement.append(newTextField);
+    newLiElement.attr('id',gid);
     newLiElement.addClass("group");
+    newLiElement.click(function(){
+        self.selectGroup(newLiElement);
+        self.loadGroup(gid);
+    });
     return newLiElement;
 }
 
 /**
+ * activate the li element and deactivate all others
+ * @param object element the li element which should be activate
+ */
+function selectGroup(element){
+    var activeElements = self.grouplist.find('.active');
+    activeElements.removeClass('active');
+    element.addClass('active');
+    self.debugLog("activate"+element.attr('id'));
+    self.displayRightContent();
+}
+
+/**
  * TODO
+ */
+function getSelectedGroup(){
+    return GROUPDB.getGroupWithId(self.grouplist.find('.active').attr('id'));
+}
+
+/**
+ * load a group with the gid into the rightcontent
+ * @param int gid groupid which should be loaded at the right side
+ */
+function loadGroup(gid){
+    self.clearRightContent();
+    self.debugLog("load group "+gid);
+    var group=self.getSelectedGroup();
+    var memberList=group.getListOfMembers();
+    self.debugLog("memberlist size? "+memberList.length);
+    for(var i=0;i<memberList.length;i++){
+        var member = GROUPDB.getUser(memberList[i][0]);
+        self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
+        self.debugLog("add user "+member.uid+" to group "+group.getGroupname());
+    }
+    self.groupdescription.val(group.getDescription());
+    if(group!=null&&group.isUserAdmin(OC.currentUser)){
+        self.groupdescriptionsave.click(function(){
+            self.saveDescription(group.getGroupid());
+        });
+        self.groupdescription.removeAttr('readonly');
+        self.groupdescriptionsave.removeAttr('disabled');
+    }else{
+        self.groupdescription.attr('readonly','readonly');
+        self.groupdescriptionsave.attr('disabled', 'disabled');
+    }
+}
+
+/**
+ * clear rightContent (memberlist and description)
+ */
+function clearRightContent(){
+    self.memberlist.find(".member").remove();
+    self.groupdescription.val("");
+}
+
+/**
  * check if groupname is not taken
  * @param string characters of the groupname
  * @return boolean true if the groupname is valid
  */
 function checkGroupname(groupname){
     self.notifyGroupCreation(self.CHECKING);
-    self.notifyGroupCreation(self.OK);
-    return true;
+    var valid=GROUPDB.isGroupnameValid(groupname);
+    if(valid){
+        self.notifyGroupCreation(self.OK);
+        return true;        
+    }else{
+        self.notifyGroupCreation(self.NOTVALID);
+        return false;
+    }
 }
 
 /**
- * TODO
  * get users that matches the string in the userSearchResult field
  * @param string characters of the username
  */
 function getUsers(username){
-    //TODO get users with the special characters form the DB
     //remove all child elements with the class userBox
     self.userSearchResult.children(".userBox").remove();
-    self.userSearchResult.append(createUser(0,"mem1"));
-    self.userSearchResult.append(createUser(1,"mem2"));
+    var userList = GROUPDB.getUsersWith(username);
+    for(var i = 0;i<userList.length&&i<=6;i++){
+        if(i>=6){
+            var moreUser = $('<textfield>');
+            moreUser.text("to many users...");
+            moreUser.addClass("userBox");
+            self.userSearchResult.append(moreUser);
+        }else{
+            self.userSearchResult.append(createUser(userList[i].uid,userList[i].displayname));
+        }
+    }
 }
 
 /**
@@ -313,9 +430,24 @@ function createUser(uid,name){
     newTextField.text(name);
     newTextField.addClass("userBox");
     newTextField.click(function(){
-        self.addMember(uid);
+        if(self.getSelectedGroup().isUserAdmin(OC.currentUser)){
+            self.addMember(uid,false,true);
+            if(self.getSelectedGroup().isMember(uid)){
+                //TODO
+                alert("user is already member of this group");
+            }else{
+                GROUPDB.addMember(self.getSelectedGroup().getGroupid(),uid,false);
+            }
+        }
     });
     return newTextField;
+}
+
+/**
+ *
+ */
+function modifyMember(uid,permission){
+    GROUPDB.modifyMember(self.getSelectedGroup().getGroupid(),uid,permission);
 }
 
 /**
@@ -324,9 +456,10 @@ function createUser(uid,name){
  * @param int uid userid
  * @param string name which should be displayed
  * @param string email address which should be displayed
- * @param boolean if the user have the permission to change and delete members
+ * @param bool admin if the user have the permission to change and delete members
+ * @param bool adminPermission if the current user have the permission to change group preferences
  */
-function createMember(uid,name,email,admin){
+function createMember(uid,name,email,admin,adminPermission){
     var newRow = $('<tr>');
     
     //cell for name
@@ -351,14 +484,22 @@ function createMember(uid,name,email,admin){
     if(admin){
         adminCheckbox.attr('checked','checked');
     }
-    //TODO check if user have permission to change
-    adminCheckbox.attr('disabled','disabled');
+    if(!adminPermission){
+        adminCheckbox.attr('disabled','disabled');
+    }else{
+        adminCheckbox.click(function(){
+            if($(this).is(':checked')) {
+                self.modifyMember(uid,true);
+            }else{
+                self.modifyMember(uid,false);
+            }
+        });
+    }
     cellAdmin.append(adminCheckbox);
     
     //cell for the delete action
-    //TODO add action to delete member of group and check the permission
     var cellDelete = $('<td>');
-    if(admin){
+    if(adminPermission){
         var removeIcon = $('<a>');
         removeIcon.addClass("svg");
         removeIcon.addClass("delete");
@@ -383,14 +524,53 @@ function createMember(uid,name,email,admin){
 /**
  * add a user as member to the group
  * @param int uid of the user
+ * @param bool admin true if the user have admin privileges
+ * @param bool adminPermission did the current user have the permission to change the group preferences
  */
-function addMember(uid){
-    //TODO get member from DB
-    //TODO save member to group
+function addMember(uid,admin,adminPermission){
+    var member = GROUPDB.getUser(uid);
     var tbody = self.memberlist.children('tbody');
-    //TODO dummy
-    tbody.append(self.createMember(0,"mem1","bla@fuu",true));
-    tbody.append(self.createMember(1,"memasdf","bla@fuu",false));
+    if(tbody.find('#'+uid).length<1){
+        tbody.append(self.createMember(member.uid,member.displayname,member.email,admin,adminPermission));
+    }
+}
+
+/**
+ * save the modified description text to db
+ * @param int gid the group id
+ */
+function saveDescription(gid){
+    self.debugLog(self.groupdescription.val());
+    GROUPDB.saveDescription(gid,self.groupdescription.val());
+}
+
+/**
+ * expand/roll out the description of the group
+ */
+function expand(){
+    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-s.png'));
+    self.expandDescription.height(self.expandDescription.height()+self.groupdescription.height()+self.groupdescriptionsave.height()+50);
+    self.modDescription.removeClass('hidden');
+}
+
+/**
+ * contract/rolling in the description of the group
+ */
+function contract(){
+    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-n.png'));
+    self.expandDescription.height(self.expandPic.height());
+    self.modDescription.addClass('hidden');    
+}
+
+/**
+ * TODO
+ */
+function getGroups(){
+    var list=GROUPDB.getGroups(OC.currentUser);
+    for(var i=0;i<list.length;i++){
+        self.addGroup(list[i]);
+        self.debugLog("add group "+list[i].getGroupname());
+    }
 }
 
 /**
@@ -429,6 +609,7 @@ function topContent(){
  */
 
 function leftContent(){
+    getGroups();
 }
 
 /**
@@ -436,7 +617,6 @@ function leftContent(){
  */
 function rightContent(){
     self.userSearchInput.keypress(function(event){
-        // TODO db query
         self.getUsers(self.userSearchInput.attr('value'));
     });
     //text disappear if user click into that field
@@ -445,8 +625,8 @@ function rightContent(){
     });
     self.expandPic.attr('src',OC.imagePath('core','actions/triangle-n.png'));
     self.expandPic.attr('value','close');
-    self.expandDescription.height(self.expandPic.height());
-    self.expandDescription.click(function(){
+    self.expandDescription.height(self.expandPic.height()+16);
+    self.expandPic.click(function(){
         if(self.expandPic.attr('value')=='close'){
             self.expand();
             self.expandPic.attr('value','open');
@@ -454,20 +634,7 @@ function rightContent(){
             self.contract();
             self.expandPic.attr('value','close');
         }
-    });
-    
-}
-
-function expand(){
-    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-s.png'));
-    self.expandDescription.height(self.expandDescription.height()+self.groupdescription.height()+self.groupdescriptionsave.height()+50);
-    self.modDescription.removeClass('hidden');
-}
-
-function contract(){
-    self.expandPic.attr('src',OC.imagePath('core','actions/triangle-n.png'));
-    self.expandDescription.height(self.expandPic.height());
-    self.modDescription.addClass('hidden');    
+    });    
 }
 
 /**
@@ -483,6 +650,8 @@ $(document).ready(function () {
     // be sure that all routes from /appinfo/routes.php are loaded
 	OC.Router.registerLoadedCallback(function(){
 	   init();
+	   hideRightContent();
+	   GROUPDB.init();
 	   self.debugLog("start groupmanager");
 	   regActions();
     });

@@ -77,6 +77,8 @@ class PageController extends Controller {
 
         // loads the script from the js directory
 		$this->api->addScript('app'); //app = /js/app.js
+		$this->api->addScript('group'); //app = /js/group.js
+		$this->api->addScript('operations'); //app = /js/operations.js
         
         //templateName is the name of the Template in /templates
 		$templateName = 'main';

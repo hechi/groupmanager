@@ -260,12 +260,15 @@ a.action.delete{background-image:url('%webroot%/core/img/actions/delete.png');}
     -o-transition:background-color 200ms;
      transition:background-color 200ms; 
  }
-#grouplist li:hover, #grouplist li:active, #grouplist li.active, .grouplist li:hover, .grouplist li:active, .grouplist li.active { background:#eee; }
-#grouplist li:active, .group li:active { font-weight:bold; }
-#grouplist li:hover, .group li:hover { 
+#grouplist li:hover, #grouplist li:active, #grouplist li.active, .grouplist li:hover { background:#eee; }
+#grouplist li.active, .group li.active { 
+    font-weight:bold; 
+    color:#333; 
+}
+#grouplist li:hover, .group li:hover {
     color:#333; 
     background:#ddd; 
-    
+    font-weight:bold; 
 }
 
 #grouplist .group:hover > *.delete {

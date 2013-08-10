@@ -71,6 +71,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     * Checks whether the user is member of a group or not.
     */
     public function inGroup($uid, $gid){
+        /*
         //get all groups where the user is a member or admin
         $groups = $this->findByUserId($uid);
         //default: the user is not in list
@@ -85,6 +86,8 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
         }
         //give back the result
         return $ret;
+        */
+        return true;
     }
 
     /**
@@ -96,6 +99,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     * if the user exists at all.
     */
     public function getUserGroups($uid){
+        /*
         //get all groups where the user is a member or admin
         $groups = $this->findByUserId($uid);
         //create an empty array
@@ -117,6 +121,8 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
         }   
         //return the names
         return $groupnames;  
+        */
+        return array("hans","beter");
     }
 
     /**
@@ -129,6 +135,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     * Returns a list with all groups
     */
     public function getGroups($search = '', $limit = -1, $offset = 0){
+        /*
         //get all groups from the database
         $groups = $this->findAll();
         //create an empty array
@@ -150,6 +157,8 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
         }  
         //return the names
         return $groupnames;  
+        */
+        return array();
     }
 
     /**
@@ -170,6 +179,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     * @return array with user ids
     */
     public function usersInGroup($gid, $search = '', $limit = -1, $offset = 0){
+        /*
         $item = $this->findGroupByName($gid);
         $users = $item->getMember();
         foreach($item->getAdminArray() as $admin){
@@ -177,7 +187,9 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
                 array_push($users,$admin);
             }
         }      
-        return $users;    
+        return $users; 
+        */
+        return array();   
     }
     
     
@@ -217,6 +229,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	 * @return list of groups
 	 */
 	public function findByUserId($userId){
+	    /*
 	    //create sql querys to select all groupid's in admin and member table
 	    $sqlGroupadmin = 'SELECT groupid FROM `'.$this->tableAdmin.'` 
 	                        WHERE `admin` = ?';
@@ -255,24 +268,13 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	        $entity = new Item($result->fetchRow());
 	        array_push($entityList,$entity);
         }	
-	    //TODO OLD
-        //TODO make a little bit more sql to find groups where the user is a member and admin of
-        /*
-		$sql = 'SELECT * FROM `' . $this->tableName . '`';// WHERE `groupadmin` = ?';
-		$params = array($userId);
-
-		$result = $this->execute($sql);
-		
-		$entityList = array();
-		while($row = $result->fetchRow()){
-			$entity = new Item($row);
-			array_push($entityList, $entity);
-		}
-		*/
 		return $entityList;
+		*/
+		return array();
 	}
 	
 	public function groupnameExists($groupname){
+	    /*
 	    $sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `groupname` = ?';
 	    $params = array($groupname);
 	    $result = $this->execute($sql, $params);
@@ -282,15 +284,19 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	    }else{
 	        return true;
 	    }
+	    */
+	    return true;
 	}
 	
 	public function findGroupByName($groupname){
+	    /*
 	    $sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `groupname` = ?';
 	    $params = array($groupname);
 	    $result = $this->execute($sql, $params);
 	    $row = $result->fetchRow();
 	    $groupid = $row['groupid'];
 	    
+	    */
 	    return $this->findByGroupId($groupid);
 	}
 
@@ -301,6 +307,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	 * @return the groupitem
 	 */
 	public function findByGroupId($groupId){
+	    /*
 		$sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `groupid` = ?';
 		$sqlGroupadmin = 'SELECT admin FROM `'. $this->tableAdmin. '` WHERE `groupid` = ?';
 		$sqlGroupmember = 'SELECT member FROM `'. $this->tableMember. '` WHERE `groupid` = ?';
@@ -329,6 +336,8 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 		$entity->setMember($groupmembers);
 
 		return $entity;
+		*/
+		return array();
 	}
 
 	/**
@@ -336,6 +345,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	 * @return array containing all items
 	 */
 	public function findAll(){
+	    /*
 		$sql = 'SELECT * FROM `' . $this->tableName . '`';
 		
 		$params = array();
@@ -351,6 +361,8 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 		    array_push($groupList,$item);
 		}
 		return $groupList;
+		*/
+		return array();
 	}
 
 
@@ -360,6 +372,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	 * @return the item with the filled in id
 	 */
 	public function save($item){
+	/*
         //TODO more sql magic to but it in the right tables
 		$sqlGroup = 'INSERT INTO `'. $this->tableName . '`(`groupname`, `description`)'.
 				' VALUES(?, ?)';
@@ -395,6 +408,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	        // fire sql query to the database
 	        $this->execute($sqlGroupmembers,$paramsGroupmembers);
 	    }
+	    */
 	}
 
 
@@ -404,6 +418,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	 * @param Item $item: the item to be updated
 	 */
 	public function update($item){
+	/*
 		$sqlGroup = 'UPDATE `'. $this->tableName . '` SET
 				`groupname` = ?,
 				`description` = ?
@@ -454,6 +469,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	        // fire sql query to the database
 	        $this->execute($sqlGroupmembers,$paramsGroupmembers);
 	    }	
+	    */
 	}
 
 
@@ -462,6 +478,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	 * @param int $id: the id of the item
 	 */
 	public function deleteByGroupId($id){
+	/*
 		$sqlGroup = 'DELETE FROM `'.$this->tableName. '` WHERE `groupid` = ? ';
 		$sqlGroupadmin = 'DELETE FROM `'.$this->tableAdmin. '` WHERE `groupid` = ? ';
 		$sqlGroupmember = 'DELETE FROM `'.$this->tableMember. '` WHERE `groupid` = ? ';
@@ -471,6 +488,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	    $this->execute($sqlGroup,$params);
 	    $this->execute($sqlGroupadmin,$params);
 	    $this->execute($sqlGroupmember,$params);
+	*/    
 	}
 	
 	//TODO: make a better static Class for the settings
