@@ -56,6 +56,10 @@ var GROUPDB={
         //TODO
         return GROUPDB.getGroups()[gid];
     },
+    saveDescription:function(gid,description){
+        //TODO
+        console.log("save description:"+description+" in group "+gid);
+    },
     saveGroup:function(groupname,listOfMembers,groupdescription,admin){
         //TODO get back the new groupid
         console.log("save group "+groupname+" "+listOfMembers+" "+groupdescription+" "+admin);

@@ -226,6 +226,7 @@ function removeGroup(gid,element){
         GROUPDB.removeGroup(gid);
         $(document).find('.tipsy').hide();
         element.remove();
+        self.hideRightContent();
     }else{
         //TODO
         alert("you dont have the permission to delete this group");
