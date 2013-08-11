@@ -56,28 +56,75 @@ class GroupMapper extends Mapper {
         // get all group ids where the user is member
         $sqlGroupids = 'SELECT groupid FROM `'.$this->tableMember.'`
                         WHERE `userid` = ?';
-        $uidPara = array(uid);
+        $uidPara = array($uid);
         $result = $this->execute($sqlGroupids,$uidPara);
         
         $selectedGroupids=array();
         // extract groupid from the db query and save it
-        while($entry = $result->fetchRow()){
+        while($row = $result->fetchRow()){
             if(!in_array($row['groupid'],$selectedGroupids)){
                 array_push($selectedGroupids,$row['groupid']);
             }
         }
         // prepare sql state to get every group information
         $sql = 'SELECT * FROM `'.$this->tableName.'` 
-                WHERE `groupid = ?`';
+                WHERE `groupid` = ?';
         $group = array();
         // get each group with the extracted groupid
         foreach($selectedGroupids as $groupid){
             $params = array($groupid);
             $result = $this->execute($sql,$params);
             $entity = new Group($result->fetchRow());
+            
+            $entity = $this->addMembersToGroup($entity);      
+            
             array_push($group,$entity);
         }
         return $group;
+    }
+    
+    /**
+     * get all members of group with permissions
+     * @param Group object of the group to fill the members in
+     */
+    private function addMembersToGroup($group){
+        // get all Members from group
+        $sqlGroupmembers = 'SELECT * FROM `'.$this->tableMember.'`
+                            WHERE `groupid` = ?';
+        
+        $params = array($group->getGroupid());
+        $result = $this->execute($sqlGroupmembers,$params);
+        while($row = $result->fetchRow()){
+            $group->addMember($row['userid']);
+            if($row['admin']==true){
+                $group->addAdmin($row['userid']);
+            }
+        }                
+        return $group;
+    }
+    
+    /**
+     * TODO
+     */
+    public function saveGroup($groupname,$groupdescription,$admin){
+        // generate sql statement
+        $sqlGroup = 'INSERT INTO `'.$this->tableName.'`(`groupname`,
+                    `description`,`groupcreator`) VALUES(?, ?, ?)';
+        $sqlGroupMember = 'INSERT INTO `'.$this->tableMember.'`(`groupid`,
+                          `userid`,`admin`) VALUES(?, ?, ?)';
+        // get current user
+        $currentUser = $this->api->getUserId();
+        // generate array with group informations
+        $paramsGroup = array($groupname,$groupdescription,$currentUser);
+        // run sql query
+        $this->execute($sqlGroup,$paramsGroup);
+        // get last created groupid
+        $groupid = $this->api->getInsertId($this->tableName);
+        // generate array with group admin information
+        $paramsMember = array($groupid,$currentUser,true);
+        // run sql query
+        $this->execute($sqlGroupMember,$paramsMember);    
+        return $groupid;
     }
 
 }

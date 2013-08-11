@@ -67,6 +67,7 @@ class Group {
         if(isset($row['groupname'])){
 		    $this->groupname = $row['groupname'];
 		}
+		/*
 		//check if there is a parameter with the name members
 		if(isset($row['members'])){
 	        $list = split(',',$row['members']);
@@ -78,6 +79,8 @@ class Group {
 		        }
 		    }
         }
+        */
+        /*
         //check if there is a parameter with the name admins
 		if(isset($row['admins'])){
 		    $list = split(',',$row['admins']);
@@ -89,6 +92,7 @@ class Group {
 	            }
 		    }
 	    }
+	    */
 	    //check if there is a parameter with the description
 	    //if not write "no description" into the attribute
 	    if(isset($row['description'])){
@@ -97,9 +101,9 @@ class Group {
 		    $this->description = "no description";
 		}
 		//check if there is a parameter with the creator
-		if(isset($row['creator'])){
-		    $this->creator = $row['creator'];
-		)
+		if(isset($row['groupcreator'])){
+		    $this->creator = $row['groupcreator'];
+		}
 	}
 	
 /*************** GETTER ***************/
@@ -153,7 +157,7 @@ class Group {
      * @return array of strings
      */
 	public function getAdminList(){
-		return $this->groupadmin;
+		return $this->listOfAdmins;
 	}
 	
 	/**
@@ -184,7 +188,7 @@ class Group {
 	        return array('groupid' => $this->groupid, 
 	                     'groupname' => $this->groupname,
 	                     'members' => $this->getMemberListAsStr(),
-	                     'groupadmin' => $this->getAdminListAsStr(),
+	                     'admins' => $this->getAdminListAsStr(),
 	                     'description'=> $this->description,
 	                     'groupcreator' => $this->creator);	
 	}

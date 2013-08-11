@@ -23,7 +23,7 @@
 
 var dummyGroup=new Group(0,"gruppe",new Array(new Array("admin",true),new Array("hans0",false),new Array("hans6",true)),"Hundeschüssel","hans4");
 var dummyGroup2=new Group(1,"group",new Array(new Array("admin",false),new Array("hans3",true),new Array("hans1",false)),"Mäuseknochen","hans1");
-var listOfGroups = new Array(dummyGroup,dummyGroup2);
+var listOfGroups_Dummy = new Array(dummyGroup,dummyGroup2);
 var listOfUsers = null;
 
 function User(uid,displayname,email){
@@ -38,7 +38,7 @@ function User(uid,displayname,email){
  * @param json values that append the request
  * @result json if the request was successful 
  */
-function getJsonQuery(request,jsonParam){
+function getJsonQuery(request,jsonParam,callback){
     console.log("build request");
     var getUrl=null;
     if(jsonParam==null){
@@ -52,9 +52,44 @@ function getJsonQuery(request,jsonParam){
     $.post(getUrl,function(result){
         if(result.status=='success'){
             ret=result.data;
+            callback(ret);
         }
     },"json");
-    return ret;
+}
+
+/**
+ * TODO
+ */
+function jsonToGroupList(json){
+    var list = new Array();
+    console.log("json length: "+json.length);
+    for(var i=0;i<json.length;i++){
+            var listOfMembers = parseMembers(json[i].members,json[i].admins);
+            list.push(new Group(json[i].groupid,
+                                json[i].groupname,
+                                listOfMembers,
+                                json[i].description,
+                                json[i].groupcreator));
+    }
+    return list;
+}
+
+/**
+ * TODO
+ */
+function parseMembers(members,admins){
+    var listMembers = members.split(",");
+    var list = new Array();
+    for(var i = 0; i<listMembers.length;i++){
+        if(listMembers[i]!=""){
+            if(admins.indexOf(listMembers[i])>=0){
+                list.push(new Array(listMembers[i],true));
+            }else{
+                list.push(new Array(listMembers[i],false));
+            }
+        }
+    }
+    return list;
 }
 
 var GROUPDB={
@@ -66,12 +101,16 @@ var GROUPDB={
     },
     getGroups:function(uid,callback){
         console.log("query to DB");
-        var result = getJsonQuery('getGroups',null);
-        console.log(result);
-        console.log("done");
-        if (callback && typeof(callback) === "function") {  
-            callback(result);  
-        }
+        getJsonQuery('getGroups',null,function(result){
+            console.log(result);
+            
+            console.log("done");
+            var listOfGroups = jsonToGroupList(result);
+            console.log(listOfGroups);
+            if (callback && typeof(callback) === "function") {  
+                callback(listOfGroups);  
+            }
+        });
     },
     //TODO callback
     getGroupWithId:function(gid,callback){
@@ -82,10 +121,17 @@ var GROUPDB={
         GROUPDB_Dummy.saveDescription(gid,description);
     },
     //TODO callback
-    saveGroup:function(groupname,listOfMembers,groupdescription,admin,callback){
+    saveGroup:function(groupname,groupdescription,admin,callback){
         console.log("save group");
-        var result = GROUPDB_Dummy.saveGroup(groupname,listOfMembers,groupdescription,admin);
-        callback(result);
+        getJsonQuery('saveGroup',{gname:groupname,
+                                  gdesc:groupdescription,
+                                  adm:admin},function(result){
+            console.log(result);
+            
+            if (callback && typeof(callback) === "function") {  
+                callback(result);  
+            }
+        });
     },
     removeGroup:function(gid){
         GROUPDB_Dummy.removeGroup(gid);
@@ -136,7 +182,7 @@ var GROUPDB_Dummy={
     },
     getGroups:function(uid){
         //TODO
-        return listOfGroups;
+        return listOfGroups_Dummy;
     },
     getGroupWithId:function(gid){
         //TODO
@@ -149,8 +195,8 @@ var GROUPDB_Dummy={
     saveGroup:function(groupname,listOfMembers,groupdescription,admin){
         //TODO get back the new groupid
         console.log("save group "+groupname+" "+listOfMembers+" "+groupdescription+" "+admin);
-        var group = new Group(listOfGroups.length,groupname,listOfMembers,groupdescription,admin);
-        listOfGroups.push(group);     
+        var group = new Group(listOfGroups_Dummy.length,groupname,listOfMembers,groupdescription,admin);
+        listOfGroups_Dummy.push(group);     
         return group.getGroupid();
     },
     removeGroup:function(gid){
