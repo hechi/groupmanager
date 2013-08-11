@@ -84,6 +84,22 @@ class GroupMapper extends Mapper {
     }
     
     /**
+	 * get all groups where the user is member of
+	 * @param int uid userid 
+	 * @return array with group objects
+     */
+    public function getGroup($gid){
+        // prepare sql state to get every group information
+        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+                WHERE `groupid` = ?';
+        $params = array($gid);
+        $result = $this->execute($sql,$params);
+        $group = new Group($result->fetchRow());
+        $group = $this->addMembersToGroup($group);
+        return $group;
+    }
+    
+    /**
      * get all members of group with permissions
      * @param Group object of the group to fill the members in
      */

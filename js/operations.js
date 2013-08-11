@@ -64,14 +64,22 @@ function jsonToGroupList(json){
     var list = new Array();
     console.log("json length: "+json.length);
     for(var i=0;i<json.length;i++){
-            var listOfMembers = parseMembers(json[i].members,json[i].admins);
-            list.push(new Group(json[i].groupid,
-                                json[i].groupname,
-                                listOfMembers,
-                                json[i].description,
-                                json[i].groupcreator));
+            list.push(jsonToGroup(json[i]));
     }
     return list;
+}
+
+/**
+ * TODO
+ */
+function jsonToGroup(json){
+    var listOfMembers = parseMembers(json.members,json.admins);
+    var group = new Group(json.groupid,
+                          json.groupname,
+                          listOfMembers,
+                          json.description,
+                          json.groupcreator);
+    return group;
 }
 
 /**
@@ -114,8 +122,10 @@ var GROUPDB={
     },
     //TODO callback
     getGroupWithId:function(gid,callback){
-        var result = GROUPDB_Dummy.getGroupWithId(gid);
-        callback(result);
+        getJsonQuery('getGroup',{groupid:gid},function(result){
+            var group = jsonToGroup(result);
+            callback(group);
+        });
     },
     saveDescription:function(gid,description){
         GROUPDB_Dummy.saveDescription(gid,description);

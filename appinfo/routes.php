@@ -51,6 +51,13 @@ $this->create('getGroups', '/getGroups/')->post()->action(
     }
 );
 //TODO
+$this->create('getGroup', '/getGroup/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'getGroup', $params, new DIContainer());
+    }
+);
+//TODO
 $this->create('saveGroup', '/saveGroup/')->post()->action(
     function($params){
         // call the index method on the class PageController

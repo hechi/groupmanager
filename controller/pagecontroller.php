@@ -116,6 +116,19 @@ class PageController extends Controller {
 	}
 	
 	/**
+     * get group by id
+	 * 
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @return TODO
+     */
+	public function getGroup(){
+	    $group = $this->groupmapper->getGroup($this->params('groupid'));
+	    return $this->renderJSON($group->getProperties());
+	}
+	
+	/**
      * create a group
 	 * 
 	 * @CSRFExemption
@@ -124,12 +137,6 @@ class PageController extends Controller {
 	 * @return TODO
      */
 	public function saveGroup(){
-	/*
-	    $groupname = $this->params('gname');
-	    $listOfMembers = $this->params('lom');
-	    $groupdescription = $this->params('gdesc');
-	    $admin = $this->admin('adm');
-    */
         //TODO check if groupname is valid
 	    $groupid = $this->groupmapper->saveGroup($this->params('gname'),
 	                                           $this->params('gdesc'),
