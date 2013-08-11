@@ -234,4 +234,19 @@ class PageController extends Controller {
         return $this->renderJSON($params);
     }
     
+    /**
+     * check if a groupname is not taken
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function saveDescription(){
+        $res = $this->groupmapper->saveDescription($this->params('groupid'),$this->params('desc'));
+        $params = array('res'=>$res);
+        return $this->renderJSON($params);
+    }
+    
+    
+    
 }

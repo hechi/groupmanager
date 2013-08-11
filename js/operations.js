@@ -126,8 +126,14 @@ var GROUPDB={
             callback(group);
         });
     },
-    saveDescription:function(gid,description){
-        GROUPDB_Dummy.saveDescription(gid,description);
+    saveDescription:function(gid,description,callback){
+        console.log("query to DB");
+        getJsonQuery('saveDescription',{groupid:gid,desc:description},function(result){
+            console.log(result);
+            if (callback && typeof(callback) === "function") {  
+                callback(result.res);  
+            }
+        });
     },
     //TODO callback
     saveGroup:function(groupname,groupdescription,admin,callback){

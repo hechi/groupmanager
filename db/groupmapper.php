@@ -158,5 +158,21 @@ class GroupMapper extends Mapper {
             return true;
         }
     }
+    
+    /**
+     * TODO
+     */
+    public function saveDescription($gid,$description){
+        $sql = 'UPDATE `'.$this->tableName.'` SET `description` = ?
+                                              WHERE `groupid` = ?';
+                                          
+        $params = array($description,$gid);
+        $result = $this->execute($sql,$params);
+        if($result>0){
+            return true;
+        }else{
+            return false;        
+        }
+    }
 
 }

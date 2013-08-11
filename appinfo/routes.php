@@ -83,3 +83,9 @@ $this->create('isGroupnameValid', '/isGroupnameValid/')->post()->action(
         App::main('PageController', 'isGroupnameValid', $params, new DIContainer());
     }
 );
+$this->create('saveDescription', '/saveDescription/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'saveDescription', $params, new DIContainer());
+    }
+);
