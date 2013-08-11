@@ -21,11 +21,9 @@
 * 
 */
 
-var dummyGroup=new Group(-0,"gruppe",new Array(new Array("admin",true),new Array("hans0",false),new Array("hans6",true)),"Hundeschüssel","hans4");
-var dummyGroup2=new Group(-1,"group",new Array(new Array("admin",false),new Array("hans3",true),new Array("hans1",false)),"Mäuseknochen","hans1");
-var listOfGroups_Dummy = new Array(dummyGroup,dummyGroup2);
-var listOfUsers = null;
-
+/**
+ * represent a user in the frontend
+ */
 function User(uid,displayname){
     this.uid=uid;
     this.displayname=displayname;
@@ -57,7 +55,9 @@ function getJsonQuery(request,jsonParam,callback){
 }
 
 /**
- * TODO
+ * parse a json object to a list of groups
+ * @param json object
+ * @return array a list of group objects
  */
 function jsonToGroupList(json){
     var list = new Array();
@@ -69,7 +69,10 @@ function jsonToGroupList(json){
 }
 
 /**
- * TODO
+ * parse a single json to a group object
+ * @param json object with (groupid,groupname,commaSeperatedString,description,
+ *                           groupcreator)
+ * @return group object
  */
 function jsonToGroup(json){
     var listOfMembers = parseMembers(json.members,json.admins);
@@ -82,7 +85,11 @@ function jsonToGroup(json){
 }
 
 /**
- * TODO
+ * parse a comma seperated string to a list of (username,admin) tuple,
+ * the admin is a boolean for the permission to change things
+ * @param string members to parse
+ * @param string a string with usernames the are also admins
+ * @return array(array) a array in an array, the second is the tuple
  */
 function parseMembers(members,admins){
     var listMembers = members.split(",");
@@ -99,69 +106,93 @@ function parseMembers(members,admins){
     return list;
 }
 
+/**
+ * represent the connection to the pagecontroller
+ */
 var GROUPDB={
     /**
-     * setup the connection to the pagecontroller
+     * get all groups of the current user and parse the result to a list of gorup
+     * object and give it back via callback function
+     * @param function which called at the end if this function is done
      */
-    init:function(){
-        //GROUPDB_Dummy.init();
-    },
-    //TODO comment remove uid(not needed)
-    getGroups:function(uid,callback){
+    getGroups:function(callback){
         console.log("query to DB");
         getJsonQuery('getGroups',null,function(result){
-            console.log(result);
-            
-            console.log("done");
+            console.log("result: "+result);
             var listOfGroups = jsonToGroupList(result);
-            console.log(listOfGroups);
+            console.log("after convert result: "+listOfGroups);
             if (callback && typeof(callback) === "function") {  
                 callback(listOfGroups);  
             }
         });
     },
-    //TODO comment
+    /**
+     * get a group with groupid and parse it to a group object and give it back 
+     * via callback function
+     * @param int groupid which group we want
+     * @param function which called at the end if this function is done
+     */
     getGroupWithId:function(gid,callback){
         getJsonQuery('getGroup',{groupid:gid},function(result){
             var group = jsonToGroup(result);
             callback(group);
         });
     },
-    //TODO no callback needed yet, but later?
+    /**
+     * send a new description for a group to the server
+     * @param int groupid which groupdescription we want to change
+     * @param function which called at the end if this function is done
+     */
     saveDescription:function(gid,description,callback){
         console.log("query to DB");
         getJsonQuery('saveDescription',{groupid:gid,desc:description},function(result){
-            console.log(result);
+            console.log("result: "+result);
             if (callback && typeof(callback) === "function") {  
                 callback(result.res);  
             }
         });
     },
-    //TODO comment
-    saveGroup:function(groupname,groupdescription,admin,callback){
+    /**
+     * send new created group to server, so he can save it and give the new 
+     * created groupid back via callback function
+     * @param string groupname
+     * @param string groupdescription
+     * @param function which called at the end if this function is done
+     */
+    saveGroup:function(groupname,groupdescription,callback){
         console.log("save group");
         getJsonQuery('saveGroup',{gname:groupname,
-                                  gdesc:groupdescription,
-                                  adm:admin},function(result){
-            console.log(result);
+                                  gdesc:groupdescription},function(result){
+            console.log("result: "+result);
             
             if (callback && typeof(callback) === "function") {  
                 callback(result);  
             }
         });
     },
+    /**
+     * remove group via groupid, if it was successful we get true via
+     * callback function, otherwise false
+     * @param int groupid
+     * @param function which called at the end if this function is done
+     */
     removeGroup:function(gid,callback){
         console.log("remove group");
         getJsonQuery('removeGroup',{groupid:gid},function(result){
-            console.log(result);
-            
+            console.log("result: "+result);
             if (callback && typeof(callback) === "function") {  
-                callback(result);  
+                callback(result.res);  
             }
         });
     },
-    //TODO comment remove adminPermission(not needed)
-    addMember:function(gid,uid,adminPermission,callback){
+    /**
+     * add a user as member to the group with gid, if it was successful we get 
+     * true via callback function, otherwise false
+     * @param int groupid
+     * @param string userid
+     * @param function which called at the end if this function is done
+     */
+    addMember:function(gid,uid,callback){
         console.log("add member "+uid+" to group "+gid);
         getJsonQuery('addMember',{groupid:gid,
                                   userid:uid},function(result){
@@ -171,7 +202,15 @@ var GROUPDB={
             }
         });
     },
-    //TODO comment callback not needed yet, but later?
+    /**
+     * modify the admin permission for user with the uid in the group with gid
+     * if it was successful we get true via callback function, otherwise false
+     * @param int groupid
+     * @param string userid
+     * @param bool new admin permission, true if he get the admin status for
+     *             for this group, otherwise false
+     * @param function which called at the end if this function is done
+     */
     modifyMember:function(gid,uid,adminPermission,callback){
         console.log("modify member "+uid+" of group "+gid);
         getJsonQuery('modifyMember',{groupid:gid,
@@ -183,9 +222,14 @@ var GROUPDB={
             }
         });
     },
-    //TODO comment
+    /**
+     * remove member with the userid of the group with the groupid, 
+     * if it was successful we get true via callback function, otherwise false
+     * @param int groupid
+     * @param string userid
+     * @param function which called at the end if this function is done
+     */
     removeMember:function(gid,uid,callback){
-        GROUPDB_Dummy.removeMember(gid,uid);
         console.log("remove member "+uid+" of group "+gid);
         getJsonQuery('removeMember',{groupid:gid,
                                      userid:uid},function(result){
@@ -195,7 +239,12 @@ var GROUPDB={
             }
         });
     },
-    //TODO comment
+    /**
+     * get displayName of the user with the uid, return the user information
+     * back via callback function
+     * @param string userid
+     * @param function which called at the end if this function is done
+     */
     getUser:function(uid,callback){
         getJsonQuery('getUser',{username:uid},function(result){
             console.log(result);
@@ -207,7 +256,11 @@ var GROUPDB={
             }
         });
     },
-    //TODO comment
+    /**
+     * check if the groupname is already taken by a other user, return true via
+     * callback function if the groupname is NOT taken, otherwise false
+     * @param function which called at the end if this function is done
+     */
     isGroupnameValid:function(groupname,callback){
         getJsonQuery('isGroupnameValid',{gname:groupname},function(result){
             console.log(result);
@@ -218,7 +271,11 @@ var GROUPDB={
             }
         });
     },
-    //TODO comment
+    /**
+     * get a list with all users if there beginning matches the uid
+     * @param string part of the username
+     * @param function which called at the end if this function is done
+     */
     getUsersWith:function(uid,callback){
         getJsonQuery('getUsers',{searchString:uid},function(result){
             console.log(result);
@@ -233,76 +290,4 @@ var GROUPDB={
             }
         });
     }
-};
-
-var GROUPDB_Dummy={
-    
-    /**
-     * TODO
-     */
-    init:function(){
-        if(listOfUsers==null){
-            var userList = new Array();
-            listOfUsers=new Array();
-            listOfUsers.push(new User(OC.currentUser,"Current User"));
-            for(var i = 0 ; i<8;i++){
-                userList[i] = new User("hans"+i,"Hans Meier"+i);
-                listOfUsers.push(userList[i]);
-            }
-        }
-    },
-    getGroups:function(uid){
-        //TODO
-        return listOfGroups_Dummy;
-    },
-    getGroupWithId:function(gid){
-        //TODO
-        return GROUPDB_Dummy.getGroups()[gid];
-    },
-    saveDescription:function(gid,description){
-        //TODO
-        console.log("save description:"+description+" in group "+gid);
-    },
-    saveGroup:function(groupname,listOfMembers,groupdescription,admin){
-        //TODO get back the new groupid
-        console.log("save group "+groupname+" "+listOfMembers+" "+groupdescription+" "+admin);
-        var group = new Group(listOfGroups_Dummy.length,groupname,listOfMembers,groupdescription,admin);
-        listOfGroups_Dummy.push(group);     
-        return group.getGroupid();
-    },
-    removeGroup:function(gid){
-        //TODO
-        console.log("remove group"+gid);
-    },
-    addMember:function(gid,uid,adminPermission){
-        //TODO
-        console.log("add "+uid+" to group "+gid+" with adminPermissions? "+adminPermission);
-        GROUPDB_Dummy.getGroupWithId(gid).getListOfMembers().push(uid,adminPermission);
-    },
-    modifyMember:function(gid,uid,adminPermission){
-        console.log("modify "+uid+" in group "+gid+" with adminPermissions? "+adminPermission);
-    },
-    removeMember:function(gid,uid){
-        //TODO
-        console.log("remove member "+uid+" from group "+gid);
-        //TODO check if there es a other member with admin privileges
-        return true;
-    },
-    getUser:function(uid){
-        //TODO
-        for(var i=0;i<listOfUsers.length;i++){
-            if(listOfUsers[i].uid==uid){
-                return listOfUsers[i];
-            }
-        }
-        return null;
-    },
-    isGroupnameValid:function(groupname){
-        //TODO
-        return true;
-    },
-    getUsersWith:function(uid){
-        //TODO
-        return listOfUsers;
-    },
 };

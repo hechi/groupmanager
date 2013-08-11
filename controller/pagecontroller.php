@@ -39,14 +39,11 @@ use OCA\Groupmanager\Db\Group;
 class PageController extends Controller {
 
     /* Attribute */
-//    private $itemController;
-//    private $itemMapper;
     private $groupmapper;
 
     /**
      * Constructor of the PageController
      * initialize the attribute
-     * TODO
      */
     public function __construct($api, $request){
         parent::__construct($api, $request);
@@ -93,12 +90,13 @@ class PageController extends Controller {
     }
     
     /**
-     * get all groups where the user is a member or admin
+     * get all groups where the current user is a member or admin
+     * return a json object with all groups and there properties
 	 * 
 	 * @CSRFExemption
 	 * @IsAdminExemption
 	 * @IsSubAdminExemption
-	 * @return TODO
+	 * @return json object
      */
 	public function getGroups(){
 	    try{
@@ -121,7 +119,7 @@ class PageController extends Controller {
 	 * @CSRFExemption
 	 * @IsAdminExemption
 	 * @IsSubAdminExemption
-	 * @return TODO
+	 * @return json object with all group properties
      */
 	public function getGroup(){
 	    $group = $this->groupmapper->getGroup($this->params('groupid'));
@@ -134,13 +132,16 @@ class PageController extends Controller {
 	 * @CSRFExemption
 	 * @IsAdminExemption
 	 * @IsSubAdminExemption
-	 * @return TODO
+	 * @return json object returns a singl value (groupid)
      */
 	public function saveGroup(){
         //TODO check if groupname is valid
-	    $groupid = $this->groupmapper->saveGroup($this->params('gname'),
-	                                           $this->params('gdesc'),
-	                                           $this->params('adm'));
+        $isValid=$this->groupmapper->checkGroupname($this->params('gname'));
+        $groupid=null;
+        if($isValid){
+	        $groupid = $this->groupmapper->saveGroup($this->params('gname'),
+	                                                 $this->params('gdesc'));
+        }
 	    $array = array($groupid);
 	    return $this->renderJSON($array);
 	}
@@ -151,6 +152,7 @@ class PageController extends Controller {
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with uid and displayName
      */
     public function getUser(){
         // get the given uid from the url
@@ -176,11 +178,13 @@ class PageController extends Controller {
 	}
 	
 	/**
-     * returns a number of users
+     * returns a number of users, if the autocompleteion option is turned on
+     * else it returns only one matching user
      *
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object every entry have a uid and a displayName
      */
     public function getUsers(){
         // get the given searchString from the url
@@ -222,11 +226,13 @@ class PageController extends Controller {
     }
     
     /**
-     * check if a groupname is not taken
+     * check if a groupname is not taken, return true if it is NOT taken,
+     * false otherwise
      *
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with the entry valid. it can be true or false
      */
     public function isGroupnameValid(){
         $valid = $this->groupmapper->checkGroupname($this->params('gname'));
@@ -235,11 +241,14 @@ class PageController extends Controller {
     }
     
     /**
-     * check if a groupname is not taken
+     * save a new description to an existing group
      *
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with the entry res. it can be true if the operation
+	 *                     was okay and the new description is stored in the DB,
+	 *                     false otherwise
      */
     public function saveDescription(){
         //TODO check permission if user have that to remove the member
@@ -254,6 +263,9 @@ class PageController extends Controller {
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with the entry res. it can be true if the operation
+	 *                     was okay and the new description is stored in the DB,
+	 *                     false otherwise
      */
     public function addMember(){
         //TODO check permission if user have that to remove the member
@@ -268,6 +280,9 @@ class PageController extends Controller {
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with the entry res. it can be true if the operation
+	 *                     was okay and the new description is stored in the DB,
+	 *                     false otherwise
      */
     public function modifyMember(){
         //TODO check if there is one admin user left
@@ -283,6 +298,9 @@ class PageController extends Controller {
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with the entry res. it can be true if the operation
+	 *                     was okay and the new description is stored in the DB,
+	 *                     false otherwise
      */
     public function removeMember(){
         //TODO check if there are at least one user
@@ -293,11 +311,14 @@ class PageController extends Controller {
     }
     
     /**
-     * remove member from group
+     * remove group
      *
      * @CSRFExemption
  	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @return json object with the entry res. it can be true if the operation
+	 *                     was okay and the new description is stored in the DB,
+	 *                     false otherwise
      */
     public function removeGroup(){
         //TODO check permission if user have that to remove the group

@@ -125,7 +125,7 @@ class GroupMapper extends Mapper {
     /**
      * TODO
      */
-    public function saveGroup($groupname,$groupdescription,$admin){
+    public function saveGroup($groupname,$groupdescription){
         // generate sql statement
         $sqlGroup = 'INSERT INTO `'.$this->tableName.'`(`groupname`,
                     `description`,`groupcreator`) VALUES(?, ?, ?)';

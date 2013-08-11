@@ -299,7 +299,7 @@ function createGroup(){
     if(self.newGroupField.attr('value')!=""){
         GROUPDB.isGroupnameValid(self.newGroupField.attr('value'),function(valid){
             if(valid){
-                GROUPDB.saveGroup(self.newGroupField.attr('value'),self.newDescription.val(),OC.currentUser,function(resultGroupid){
+                GROUPDB.saveGroup(self.newGroupField.attr('value'),self.newDescription.val(),function(resultGroupid){
                     self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
                     self.debugLog("create group "+self.newGroupField.attr('value'));
                 });
@@ -525,7 +525,14 @@ function createUser(uid,name){
                     //TODO
                     alert("user is already member of this group");
                 }else{
-                    GROUPDB.addMember(group.getGroupid(),uid,false);
+                    //TODO callback
+                    GROUPDB.addMember(group.getGroupid(),uid,function(result){
+                        if(result){
+                            self.debugLog("add user:"+uid+" to group "+group.getGroupid()+" was successful");
+                        }else{
+                            self.debugLog("add user error");
+                        }
+                    });
                 }
             }
         });
@@ -537,7 +544,13 @@ function createUser(uid,name){
  *
  */
 function modifyMember(uid,permission){
-    GROUPDB.modifyMember(self.getSelectedGroupid(),uid,permission);
+    GROUPDB.modifyMember(self.getSelectedGroupid(),uid,permission,function(result){
+        if(result){
+            self.debugLog("modify user:"+uid+" new permission "+permission+" was successful");
+        }else{
+            self.debugLog("modify error");
+        }
+    });
 }
 
 /**
@@ -646,7 +659,13 @@ function addMember(uid,admin,adminPermission){
  */
 function saveDescription(gid){
     self.debugLog(self.groupdescription.val());
-    GROUPDB.saveDescription(gid,self.groupdescription.val());
+    GROUPDB.saveDescription(gid,self.groupdescription.val(),function(result){
+        if(result){
+            self.debugLog("save new description to group "+gid+" was successful");
+        }else{
+            self.debugLog("save description error");
+        }
+    });
 }
 
 /**
@@ -671,7 +690,7 @@ function contract(){
  * get groups from this user and add these groups to the leftcontent
  */
 function getGroups(){
-    GROUPDB.getGroups(OC.currentUser,function(list){
+    GROUPDB.getGroups(function(list){
         if(list!=null){
             //TODO print init page on right side?
             for(var i=0;i<list.length;i++){
@@ -778,7 +797,6 @@ $(document).ready(function () {
 	OC.Router.registerLoadedCallback(function(){
 	   init();
 	   hideRightContent();
-	   GROUPDB.init();
 	   self.debugLog("start groupmanager");
 	   regActions();
     });
