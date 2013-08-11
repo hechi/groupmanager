@@ -181,22 +181,6 @@ class GroupMapper extends Mapper {
     
     /**
      * TODO
-     * @return bool if there is a group with this gid return true, otherwise false
-     */
-    private function isGroup($gid){
-        $sql = 'SELECT * FROM `'.$this->tableName.'` 
-                WHERE `groupid` = ?';
-        $params = array($gid);
-        $result = $this->execute($sql,$params)->fetchAll();
-        if(count($result)>0){
-            return true;
-        }else{
-            return false;        
-        }
-    }
-    
-    /**
-     * TODO
      * @return bool if the query was successful return true, otherwise false
      */
     public function addMember($gid,$uid){
@@ -298,5 +282,74 @@ class GroupMapper extends Mapper {
             return false;
         }
     }
-
+    
+    /**
+     * TODO
+     * @return bool if there is a group with this gid return true, otherwise false
+     */
+    private function isGroup($gid){
+        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+                WHERE `groupid` = ?';
+        $params = array($gid);
+        $result = $this->execute($sql,$params)->fetchAll();
+        if(count($result)>0){
+            return true;
+        }else{
+            return false;        
+        }
+    }
+    
+    /**
+     * TODO
+     * @return bool return true if the current user have the permission to
+                    change anything in the group with the given groupid
+     */
+    public function isGroupadmin($gid){
+        if($this->isGroup($gid)){
+            $sql = 'SELECT admin FROM `'.$this->tableMember.'` 
+                    WHERE `groupid` = ? AND `userid` = ?';
+            $currentUser = $this->api->getUserId();
+            $params = array($gid,$currentUser);
+            $result = $this->execute($sql,$params)->fetchRow();
+            if($result['admin']==1){
+                return true;
+            }else{
+                return false;        
+            }
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * check if there is another user except to the given one how have admin
+     * permissions, it is not necessary that the given one have admin rights
+     * @param int groupid
+     * @param string userid
+     * @return bool return true if another user except the given is left in
+     *              group and have admin rights
+     */
+    public function isAdminUserLeft($gid,$uid){
+        if($this->isGroup($gid)){
+            $sql = 'SELECT userid,admin FROM `'.$this->tableMember.'`
+                    WHERE `groupid` = ?';
+            $params = array($gid);
+            $result = $this->execute($sql,$params);
+            $count = 0;
+            //count users that are not the given and have admin rights
+            while($row = $result->fetchRow()){
+                if($row['userid']!=$uid && $row['admin']==1){
+                    $count = $count + 1;
+                }
+            }
+            if($count>0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+    
 }

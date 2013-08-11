@@ -135,7 +135,6 @@ class PageController extends Controller {
 	 * @return json object returns a singl value (groupid)
      */
 	public function saveGroup(){
-        //TODO check if groupname is valid
         $isValid=$this->groupmapper->checkGroupname($this->params('gname'));
         $groupid=null;
         if($isValid){
@@ -251,8 +250,12 @@ class PageController extends Controller {
 	 *                     false otherwise
      */
     public function saveDescription(){
-        //TODO check permission if user have that to remove the member
-        $res = $this->groupmapper->saveDescription($this->params('groupid'),$this->params('desc'));
+        $permission = $this->groupmapper->isGroupadmin($this->params('groupid'));
+        $res = false;
+        if($permission){
+            $res = $this->groupmapper->saveDescription($this->params('groupid'),
+                                                       $this->params('desc'));
+        }
         $params = array('res'=>$res);
         return $this->renderJSON($params);
     }
@@ -268,8 +271,12 @@ class PageController extends Controller {
 	 *                     false otherwise
      */
     public function addMember(){
-        //TODO check permission if user have that to remove the member
-        $res = $this->groupmapper->addMember($this->params('groupid'),$this->params('userid'));
+        $permission = $this->groupmapper->isGroupadmin($this->params('groupid'));
+        $res = false;
+        if($permission){
+            $res = $this->groupmapper->addMember($this->params('groupid'),
+                                                 $this->params('userid'));
+        }
         $params = array('res'=>$res);
         return $this->renderJSON($params);
     }
@@ -285,9 +292,15 @@ class PageController extends Controller {
 	 *                     false otherwise
      */
     public function modifyMember(){
-        //TODO check if there is one admin user left
-        //TODO check permission if user have that to modify the member
-        $res = $this->groupmapper->modifyMember($this->params('groupid'),$this->params('userid'),$this->params('adm'));
+        $adminLeft = $this->groupmapper->isAdminUserLeft($this->params('groupid'),
+                                                         $this->params('userid'));
+        $permission = $this->groupmapper->isGroupadmin($this->params('groupid'));
+        $res = false;
+        if($permission && $adminLeft){
+            $res = $this->groupmapper->modifyMember($this->params('groupid'),
+                                                    $this->params('userid'),
+                                                    $this->params('adm'));
+        }
         $params = array('res'=>$res);
         return $this->renderJSON($params);
     }
@@ -303,9 +316,14 @@ class PageController extends Controller {
 	 *                     false otherwise
      */
     public function removeMember(){
-        //TODO check if there are at least one user
-        //TODO check permission if user have that to remove the member
-        $res = $this->groupmapper->removeMember($this->params('groupid'),$this->params('userid'));
+        $adminLeft = $this->groupmapper->isAdminUserLeft($this->params('groupid'),
+                                                         $this->params('userid'));
+        $permission = $this->groupmapper->isGroupadmin($this->params('groupid'));
+        $res = false;
+        if($permission && $adminLeft){
+            $res = $this->groupmapper->removeMember($this->params('groupid'),
+                                                    $this->params('userid'));
+        }
         $params = array('res'=>$res);
         return $this->renderJSON($params);
     }
@@ -321,8 +339,11 @@ class PageController extends Controller {
 	 *                     false otherwise
      */
     public function removeGroup(){
-        //TODO check permission if user have that to remove the group
-        $res = $this->groupmapper->removeGroup($this->params('groupid'));
+        $permission = $this->groupmapper->isGroupadmin($this->params('groupid'));
+        $res = false;
+        if($permission){
+            $res = $this->groupmapper->removeGroup($this->params('groupid'));
+        }
         $params = array('res'=>$res);
         return $this->renderJSON($params);
     }
