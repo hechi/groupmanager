@@ -170,8 +170,14 @@ var GROUPDB={
     },
     //TODO callback
     isGroupnameValid:function(groupname,callback){
-        var result = GROUPDB_Dummy.isGroupnameValid(groupname);
-        callback(result)
+        getJsonQuery('isGroupnameValid',{gname:groupname},function(result){
+            console.log(result);
+            
+            
+            if (callback && typeof(callback) === "function") {  
+                callback(result.valid);  
+            }
+        });
     },
     //TODO callback
     getUsersWith:function(uid,callback){

@@ -220,4 +220,18 @@ class PageController extends Controller {
         // give back all information to the website as an JSON Object
 		return $this->renderJSON($params);
     }
+    
+    /**
+     * check if a groupname is not taken
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function isGroupnameValid(){
+        $valid = $this->groupmapper->checkGroupname($this->params('gname'));
+        $params = array('valid'=>$valid);
+        return $this->renderJSON($params);
+    }
+    
 }

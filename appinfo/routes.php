@@ -77,3 +77,9 @@ $this->create('getUser', '/getUser/')->post()->action(
         App::main('PageController', 'getUser', $params, new DIContainer());
     }
 );
+$this->create('isGroupnameValid', '/isGroupnameValid/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'isGroupnameValid', $params, new DIContainer());
+    }
+);

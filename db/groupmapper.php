@@ -142,5 +142,21 @@ class GroupMapper extends Mapper {
         $this->execute($sqlGroupMember,$paramsMember);    
         return $groupid;
     }
+    /**
+     * TODO
+     * @return bool if there is the same groupname return false, because the
+     *              groupname is not valid, otherwise return true
+     */
+    public function checkGroupname($groupname){
+        $sql = 'SELECT groupname FROM `'.$this->tableName.'` 
+                WHERE `groupname` = ?';
+        $params = array($groupname);
+        $result = $this->execute($sql,$params)->fetchAll();
+        if(count($result) > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 }
