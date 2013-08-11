@@ -161,6 +161,7 @@ class GroupMapper extends Mapper {
     
     /**
      * TODO
+     * @return bool if the query was successful return true, otherwise false
      */
     public function saveDescription($gid,$description){
         $sql = 'UPDATE `'.$this->tableName.'` SET `description` = ?
