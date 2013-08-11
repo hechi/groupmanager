@@ -62,7 +62,8 @@ function getCreator(){
 function isMember(uid){
     var result = false;
     for(var i = 0;i<this.listOfMembers.length;i++){
-        // if user is in list of members and he have the admin permission for the group
+        // if user is in list of members and he have the admin permission for 
+        // the group
         if(this.listOfMembers[i][0]==uid){
             return true;
         }
@@ -73,7 +74,8 @@ function isMember(uid){
 function isUserAdmin(uid){
     var result = false;
     for(var i = 0;i<this.listOfMembers.length;i++){
-        // if user is in list of members and he have the admin permission for the group
+        // if user is in list of members and he have the admin permission for 
+        // the group
         if(this.listOfMembers[i][0]==uid&&this.listOfMembers[i][1]==true){
             return true;
         }

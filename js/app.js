@@ -570,13 +570,6 @@ function createMember(uid,name,admin,adminPermission){
     cellName.addClass("ui-draggable");
     cellName.text(name);
     
-    //cell for email address
-    /* TODO remove
-    var cellEmail = $('<td>');
-    cellEmail.addClass("email");
-    cellEmail.text(email);
-    */
-    
     //cell for admin status
     //TODO action if it change and if the user have the permission to change it
     var cellAdmin = $('<td>');
@@ -622,7 +615,6 @@ function createMember(uid,name,admin,adminPermission){
         cellDelete.append(removeIcon);
     }       
     newRow.append(cellName);
-    /*TODO newRow.append(cellEmail);*/
     newRow.append(cellAdmin);
     newRow.append(cellDelete);
     newRow.addClass("member");

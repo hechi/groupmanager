@@ -32,8 +32,25 @@ use \OCA\AppFramework\Db\DoesNotExistException;
 
 class GroupMapper extends Mapper {
 
+    /**************************************************************************/
+    /* static variable to only have one instance running */
+    private static $instance=null;
+    
+    /**
+     * to share only one instance, if there is no instance create only one
+     * @param api
+     * @return object of this class
+     */
+    public static function getInstance($api){
+        if(self::$instance==null){
+            self::$instance = new GroupMapper($api);
+        }
+        return self::$instance;
+    }
+    /**************************************************************************/
+
     /* Attribute */
-	private $tableName;
+	private $tableGroup;
 	private $tableMember; 
 	
 	/**
@@ -43,13 +60,13 @@ class GroupMapper extends Mapper {
 	public function __construct($api=null){
 	    parent::__construct($api,'groupmanager_groups');
 	    // the *PREFIX* stands for the dabasename that every admin take
-		$this->tableName = '*PREFIX*groupmanager_groups';
+		$this->tableGroup = '*PREFIX*groupmanager_groups';
 		$this->tableMember = '*PREFIX*groupmanager_members';
 	}
 	
 	/**
 	 * get all groups where the user is member of
-	 * @param int uid userid 
+	 * @param string userid 
 	 * @return array with group objects
      */
     public function getGroups($uid){
@@ -67,7 +84,7 @@ class GroupMapper extends Mapper {
             }
         }
         // prepare sql state to get every group information
-        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+        $sql = 'SELECT * FROM `'.$this->tableGroup.'` 
                 WHERE `groupid` = ?';
         $group = array();
         // get each group with the extracted groupid
@@ -87,13 +104,13 @@ class GroupMapper extends Mapper {
     }
     
     /**
-	 * get all groups where the user is member of
-	 * @param int uid userid 
-	 * @return array with group objects
+	 * get group information
+	 * @param int groupid 
+	 * @return group object
      */
     public function getGroup($gid){
         // prepare sql state to get every group information
-        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+        $sql = 'SELECT * FROM `'.$this->tableGroup.'` 
                 WHERE `groupid` = ?';
         $params = array($gid);
         $result = $this->execute($sql,$params);
@@ -103,8 +120,26 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * get all members of group with permissions
-     * @param Group object of the group to fill the members in
+     * get all groups in the database
+     * @return array with group objects
+     */
+    public function getAllGroups(){
+        // prepare sql state to get every group information
+        $sql = 'SELECT * FROM `'.$this->tableGroup;
+        $groups = array();
+        $result = $this->execute($sql,$groups);
+        while($row = $result->fetchRow()){
+            $group = new Group($row);
+            $group = $this->addMembersToGroup($group);      
+            array_push($groups,$group);
+        }
+        return $groups;
+    }
+    
+    /**
+     * fill all members of the group into the given group object and return it
+     * @param group object of the group to fill the members in
+     * @return group object
      */
     private function addMembersToGroup($group){
         // get all Members from group
@@ -123,11 +158,15 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * create ne database entry with the groupname and a description
+     * the current user is the default first member with admin permissions
+     * @param string group name
+     * @param string group description
+     * @return int return the groupid, created by the database
      */
     public function saveGroup($groupname,$groupdescription){
         // generate sql statement
-        $sqlGroup = 'INSERT INTO `'.$this->tableName.'`(`groupname`,
+        $sqlGroup = 'INSERT INTO `'.$this->tableGroup.'`(`groupname`,
                     `description`,`groupcreator`) VALUES(?, ?, ?)';
         $sqlGroupMember = 'INSERT INTO `'.$this->tableMember.'`(`groupid`,
                           `userid`,`admin`) VALUES(?, ?, ?)';
@@ -138,20 +177,22 @@ class GroupMapper extends Mapper {
         // run sql query
         $this->execute($sqlGroup,$paramsGroup);
         // get last created groupid
-        $groupid = $this->api->getInsertId($this->tableName);
+        $groupid = $this->api->getInsertId($this->tableGroup);
         // generate array with group admin information
         $paramsMember = array($groupid,$currentUser,true);
         // run sql query
         $this->execute($sqlGroupMember,$paramsMember);    
         return $groupid;
     }
+    
     /**
-     * TODO
-     * @return bool if there is the same groupname return false, because the
+     * check if the given group name is NOT taken by another user
+     * @param string group name to by checked
+     * @return bool if there is the same group name return false, because the
      *              groupname is not valid, otherwise return true
      */
     public function checkGroupname($groupname){
-        $sql = 'SELECT groupname FROM `'.$this->tableName.'` 
+        $sql = 'SELECT groupname FROM `'.$this->tableGroup.'` 
                 WHERE `groupname` = ?';
         $params = array($groupname);
         $result = $this->execute($sql,$params)->fetchAll();
@@ -163,13 +204,14 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * save a new description to a group with the given groupid
+     * @param int groupid
+     * @param string group description
      * @return bool if the query was successful return true, otherwise false
      */
     public function saveDescription($gid,$description){
-        $sql = 'UPDATE `'.$this->tableName.'` SET `description` = ?
+        $sql = 'UPDATE `'.$this->tableGroup.'` SET `description` = ?
                                               WHERE `groupid` = ?';
-                                          
         $params = array($description,$gid);
         $result = $this->execute($sql,$params);
         if($result>0){
@@ -180,7 +222,8 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * add member to group
+     * @param int groupid
      * @return bool if the query was successful return true, otherwise false
      */
     public function addMember($gid,$uid){
@@ -201,7 +244,10 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * change the permission of a user in a group
+     * @param int groupid
+     * @param string username
+     * @parma string new permission
      * @return bool if the query was successful return true, otherwise false
      */
     public function modifyMember($gid,$uid,$admin){
@@ -226,12 +272,15 @@ class GroupMapper extends Mapper {
         }
     }
     /**
-     * TODO
+     * remove member from group
+     * @param int groupid
+     * @param string username
      * @return bool if the query was successful return true, otherwise false
      */
     public function removeMember($gid,$uid){
         if($this->isGroup($gid)){
-            $sql = 'DELETE FROM `'.$this->tableMember.'` WHERE `groupid` = ? AND `userid` = ?';
+            $sql = 'DELETE FROM `'.$this->tableMember.'` WHERE `groupid` = ? 
+                    AND `userid` = ?';
             $params = array($gid,$uid);
             $result = $this->execute($sql,$params);
             if($result>0){
@@ -245,7 +294,8 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * remove all members from group
+     * @param int groupid
      * @return bool if the query was successful return true, otherwise false
      */
     public function removeAllMemberFromGroup($gid){
@@ -264,13 +314,14 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * remove a group by groupid
+     * @param int groupid
      * @return bool if the query was successful return true, otherwise false
      */
     public function removeGroup($gid){
         if($this->isGroup($gid)){
             $this->removeAllMemberFromGroup($gid);
-            $sql = 'DELETE FROM `'.$this->tableName.'` WHERE `groupid` = ?';
+            $sql = 'DELETE FROM `'.$this->tableGroup.'` WHERE `groupid` = ?';
             $params = array($gid);
             $result = $this->execute($sql,$params) && $this->removeAllMemberFromGroup($gid);
             if($result>0){
@@ -284,11 +335,13 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
-     * @return bool if there is a group with this gid return true, otherwise false
+     * check if the group with the groupid exists
+     * @param int groupid
+     * @return bool if there is a group with this gid return true, otherwise 
+     *              false
      */
     private function isGroup($gid){
-        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+        $sql = 'SELECT * FROM `'.$this->tableGroup.'` 
                 WHERE `groupid` = ?';
         $params = array($gid);
         $result = $this->execute($sql,$params)->fetchAll();
@@ -300,9 +353,11 @@ class GroupMapper extends Mapper {
     }
     
     /**
-     * TODO
+     * check if the current user have admin permissions in the group with the
+     * groupid
+     * @param int groupid
      * @return bool return true if the current user have the permission to
-                    change anything in the group with the given groupid
+     *              change anything in the group with the given groupid
      */
     public function isGroupadmin($gid){
         if($this->isGroup($gid)){

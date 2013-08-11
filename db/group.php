@@ -67,32 +67,6 @@ class Group {
         if(isset($row['groupname'])){
 		    $this->groupname = $row['groupname'];
 		}
-		/*
-		//check if there is a parameter with the name members
-		if(isset($row['members'])){
-	        $list = split(',',$row['members']);
-		    foreach( $list as $entry ){
-		        //echo "eintries ".$entry."\n";
-		        //check if the entry is an empty string
-		        if(!(trim($entry)==='')){
-		            $this->addMember($entry);
-		        }
-		    }
-        }
-        */
-        /*
-        //check if there is a parameter with the name admins
-		if(isset($row['admins'])){
-		    $list = split(',',$row['admins']);
-		    foreach( $list as $entry ){
-		        //echo "eintries ".$entry."\n";
-		        //check if the entry is an empty string
-		        if(!(trim($entry)==='')){
-		            $this->addAdmin($entry);
-	            }
-		    }
-	    }
-	    */
 	    //check if there is a parameter with the description
 	    //if not write "no description" into the attribute
 	    if(isset($row['description'])){

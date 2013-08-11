@@ -49,7 +49,7 @@ class PageController extends Controller {
         parent::__construct($api, $request);
         
         //$this->initAdminSettings();
-        $this->groupmapper = new Groupmapper($api);
+        $this->groupmapper = Groupmapper::getInstance($api);
     }
     
     /**
