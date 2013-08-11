@@ -125,7 +125,7 @@ class GroupMapper extends Mapper {
      */
     public function getAllGroups(){
         // prepare sql state to get every group information
-        $sql = 'SELECT * FROM `'.$this->tableGroup;
+        $sql = 'SELECT * FROM `'.$this->tableGroup.'`';
         $groups = array();
         $result = $this->execute($sql,$groups);
         while($row = $result->fetchRow()){
@@ -340,7 +340,7 @@ class GroupMapper extends Mapper {
      * @return bool if there is a group with this gid return true, otherwise 
      *              false
      */
-    private function isGroup($gid){
+    public function isGroup($gid){
         $sql = 'SELECT * FROM `'.$this->tableGroup.'` 
                 WHERE `groupid` = ?';
         $params = array($gid);

@@ -10,7 +10,7 @@ $api = new \OCA\AppFramework\Core\API('groupmanager');
 $groupBackend = new \OCA\Groupmanager\Db\GroupmanagerBackend($api);
 
 // register the GroupBackend to Owncloud
-//\OC_Group::useBackend($groupBackend);
+\OC_Group::useBackend($groupBackend);
 
 // add the left navigation entry
 $api->addNavigationEntry(array(

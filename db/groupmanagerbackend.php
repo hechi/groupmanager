@@ -45,7 +45,7 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 
     // contructor
 	public function __construct($api){
-	    $groupmapper = Groupmapper::getInstance($api);
+	    $this->groupmapper = Groupmapper::getInstance($api);
     }
     /**
     * @brief Check if backend implements actions
