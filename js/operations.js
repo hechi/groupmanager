@@ -26,10 +26,9 @@ var dummyGroup2=new Group(1,"group",new Array(new Array("admin",false),new Array
 var listOfGroups_Dummy = new Array(dummyGroup,dummyGroup2);
 var listOfUsers = null;
 
-function User(uid,displayname,email){
+function User(uid,displayname){
     this.uid=uid;
     this.displayname=displayname;
-    this.email=email;
 }
 
 /**
@@ -159,8 +158,15 @@ var GROUPDB={
     },
     //TODO callback
     getUser:function(uid,callback){
-        var result = GROUPDB_Dummy.getUser(uid);
-        callback(result);
+        getJsonQuery('getUser',{username:uid},function(result){
+            console.log(result);
+            
+            var user = new User(result.uid,result.displayName);
+            
+            if (callback && typeof(callback) === "function") {  
+                callback(user);  
+            }
+        });
     },
     //TODO callback
     isGroupnameValid:function(groupname,callback){
@@ -169,8 +175,18 @@ var GROUPDB={
     },
     //TODO callback
     getUsersWith:function(uid,callback){
-        var result = GROUPDB_Dummy.getUsersWith(uid);
-        callback(result);
+        getJsonQuery('getUsers',{searchString:uid},function(result){
+            console.log(result);
+            
+            var list = new Array();
+            for(var i=0;i<result.length;i++){
+                var user = new User(result[i].uid,result[i].displayName);
+                list.push(user);
+            }
+            if (callback && typeof(callback) === "function") {  
+                callback(list);  
+            }
+        });
     }
 };
 
@@ -183,9 +199,9 @@ var GROUPDB_Dummy={
         if(listOfUsers==null){
             var userList = new Array();
             listOfUsers=new Array();
-            listOfUsers.push(new User(OC.currentUser,"Current User","current@user.com"));
+            listOfUsers.push(new User(OC.currentUser,"Current User"));
             for(var i = 0 ; i<8;i++){
-                userList[i] = new User("hans"+i,"Hans Meier"+i,"hans"+i+"@meier.com");
+                userList[i] = new User("hans"+i,"Hans Meier"+i);
                 listOfUsers.push(userList[i]);
             }
         }

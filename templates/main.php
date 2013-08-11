@@ -40,7 +40,7 @@
         <thead>
             <tr id="groupHeader">
                 <td class="name">{{trans('Name')}}</td>
-                <td class="info email">{{trans('Email')}}</td>
+                <!-- TODO REMOVE <td class="info email">{{trans('Email')}}</td> -->
                 <td class="actions">{{trans('Admin')}}</td>
                 <td class="actions">{{trans('Delete')}}</td>
             </tr>

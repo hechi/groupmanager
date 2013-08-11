@@ -545,11 +545,10 @@ function modifyMember(uid,permission){
  * create a HTML table row with the given parameters
  * @param int uid userid
  * @param string name which should be displayed
- * @param string email address which should be displayed
  * @param bool admin if the user have the permission to change and delete members
  * @param bool adminPermission if the current user have the permission to change group preferences
  */
-function createMember(uid,name,email,admin,adminPermission){
+function createMember(uid,name,admin,adminPermission){
     var newRow = $('<tr>');
     
     //cell for name
@@ -559,9 +558,11 @@ function createMember(uid,name,email,admin,adminPermission){
     cellName.text(name);
     
     //cell for email address
+    /* TODO remove
     var cellEmail = $('<td>');
     cellEmail.addClass("email");
     cellEmail.text(email);
+    */
     
     //cell for admin status
     //TODO action if it change and if the user have the permission to change it
@@ -608,7 +609,7 @@ function createMember(uid,name,email,admin,adminPermission){
         cellDelete.append(removeIcon);
     }       
     newRow.append(cellName);
-    newRow.append(cellEmail);
+    /*TODO newRow.append(cellEmail);*/
     newRow.append(cellAdmin);
     newRow.append(cellDelete);
     newRow.addClass("member");
@@ -627,7 +628,7 @@ function addMember(uid,admin,adminPermission){
     GROUPDB.getUser(uid,function(member){
         var tbody = self.memberlist.children('tbody');
         if(tbody.find('#'+uid).length<1){
-            tbody.append(self.createMember(member.uid,member.displayname,member.email,admin,adminPermission));
+            tbody.append(self.createMember(member.uid,member.displayname,admin,adminPermission));
         }
     });
 /*
@@ -742,6 +743,7 @@ function leftContent(){
  */
 function rightContent(){
     self.userSearchInput.keypress(function(event){
+        console.log(self.userSearchInput.attr('value'));
         self.getUsers(self.userSearchInput.attr('value'));
     });
     //text disappear if user click into that field

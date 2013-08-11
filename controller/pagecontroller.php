@@ -144,4 +144,80 @@ class PageController extends Controller {
 	    $array = array($groupid);
 	    return $this->renderJSON($array);
 	}
+	
+	/**
+     * returns a users
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function getUser(){
+        // get the given uid from the url
+        // send by js/app.js
+        $uid = $this->params('username');
+                
+        $users = \OCP\User::getUsers($uid);
+        // create a array with parameters if need
+		$params = array();
+		// check for usernames with the searchstring
+        foreach($users as $user){
+            // check if autocompletion is true, than we are allow to search
+            // in the username for characters, else it must be the whole
+            // username
+            if($user === $uid){
+                $displayName = \OCP\User::getDisplayName($user);
+                $params = array('uid'=>$user,'displayName'=>$displayName);
+            }
+        }
+		        
+        // give back all information to the website as an JSON Object
+        return $this->renderJSON($params);
+	}
+	
+	/**
+     * returns a number of users
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function getUsers(){
+        // get the given searchString from the url
+        // send by js/app.js
+        $searchString = $this->params('searchString');
+                
+        //\OCP\User::getUsers($search = '', $limit = null, $offset = null);
+        $users = \OCP\User::getUsers($searchString);
+        // create a array with parameters if need
+		$params = array();
+		// check for usernames with the searchstring
+        foreach($users as $user){
+            // check if autocompletion is true, than we are allow to search
+            // in the username for characters, else it must be the whole
+            // username
+            /*TODO
+            if($this->getAutocompletionSetting()===true){
+                // check if the username contains the searchString
+                if(stripos($user,$searchString)!==false){
+                    // push the user in the return array
+                    array_push($params,$user);
+                }
+            }else if($searchString===$user){
+                // only push the username in the array if it is the same as
+                // the searchsSring
+                array_push($params,$user);
+            }
+            */
+            if(stripos($user,$searchString)!==false){
+                // push the user in the return array
+                $displayName = \OCP\User::getDisplayName($user);
+                $more = array('uid'=>$user,'displayName'=>$displayName);
+                array_push($params,$more);
+            }
+        }
+		        
+        // give back all information to the website as an JSON Object
+		return $this->renderJSON($params);
+    }
 }
