@@ -242,11 +242,67 @@ class PageController extends Controller {
 	 * @IsSubAdminExemption
      */
     public function saveDescription(){
+        //TODO check permission if user have that to remove the member
         $res = $this->groupmapper->saveDescription($this->params('groupid'),$this->params('desc'));
         $params = array('res'=>$res);
         return $this->renderJSON($params);
     }
     
+    /**
+     * add member to group
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function addMember(){
+        //TODO check permission if user have that to remove the member
+        $res = $this->groupmapper->addMember($this->params('groupid'),$this->params('userid'));
+        $params = array('res'=>$res);
+        return $this->renderJSON($params);
+    }
     
+    /**
+     * modify member of group
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function modifyMember(){
+        //TODO check if there is one admin user left
+        //TODO check permission if user have that to modify the member
+        $res = $this->groupmapper->modifyMember($this->params('groupid'),$this->params('userid'),$this->params('adm'));
+        $params = array('res'=>$res);
+        return $this->renderJSON($params);
+    }
     
+    /**
+     * remove member from group
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function removeMember(){
+        //TODO check if there are at least one user
+        //TODO check permission if user have that to remove the member
+        $res = $this->groupmapper->removeMember($this->params('groupid'),$this->params('userid'));
+        $params = array('res'=>$res);
+        return $this->renderJSON($params);
+    }
+    
+    /**
+     * remove member from group
+     *
+     * @CSRFExemption
+ 	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+     */
+    public function removeGroup(){
+        //TODO check permission if user have that to remove the group
+        $res = $this->groupmapper->removeGroup($this->params('groupid'));
+        $params = array('res'=>$res);
+        return $this->renderJSON($params);
+    }
 }

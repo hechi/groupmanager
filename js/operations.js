@@ -21,8 +21,8 @@
 * 
 */
 
-var dummyGroup=new Group(0,"gruppe",new Array(new Array("admin",true),new Array("hans0",false),new Array("hans6",true)),"Hundeschüssel","hans4");
-var dummyGroup2=new Group(1,"group",new Array(new Array("admin",false),new Array("hans3",true),new Array("hans1",false)),"Mäuseknochen","hans1");
+var dummyGroup=new Group(-0,"gruppe",new Array(new Array("admin",true),new Array("hans0",false),new Array("hans6",true)),"Hundeschüssel","hans4");
+var dummyGroup2=new Group(-1,"group",new Array(new Array("admin",false),new Array("hans3",true),new Array("hans1",false)),"Mäuseknochen","hans1");
 var listOfGroups_Dummy = new Array(dummyGroup,dummyGroup2);
 var listOfUsers = null;
 
@@ -104,8 +104,9 @@ var GROUPDB={
      * setup the connection to the pagecontroller
      */
     init:function(){
-        GROUPDB_Dummy.init();
+        //GROUPDB_Dummy.init();
     },
+    //TODO comment remove uid(not needed)
     getGroups:function(uid,callback){
         console.log("query to DB");
         getJsonQuery('getGroups',null,function(result){
@@ -119,13 +120,14 @@ var GROUPDB={
             }
         });
     },
-    //TODO callback
+    //TODO comment
     getGroupWithId:function(gid,callback){
         getJsonQuery('getGroup',{groupid:gid},function(result){
             var group = jsonToGroup(result);
             callback(group);
         });
     },
+    //TODO no callback needed yet, but later?
     saveDescription:function(gid,description,callback){
         console.log("query to DB");
         getJsonQuery('saveDescription',{groupid:gid,desc:description},function(result){
@@ -135,7 +137,7 @@ var GROUPDB={
             }
         });
     },
-    //TODO callback
+    //TODO comment
     saveGroup:function(groupname,groupdescription,admin,callback){
         console.log("save group");
         getJsonQuery('saveGroup',{gname:groupname,
@@ -148,21 +150,52 @@ var GROUPDB={
             }
         });
     },
-    removeGroup:function(gid){
-        GROUPDB_Dummy.removeGroup(gid);
+    removeGroup:function(gid,callback){
+        console.log("remove group");
+        getJsonQuery('removeGroup',{groupid:gid},function(result){
+            console.log(result);
+            
+            if (callback && typeof(callback) === "function") {  
+                callback(result);  
+            }
+        });
     },
-    addMember:function(gid,uid,adminPermission){
-        GROUPDB_Dummy.addMember(gid,uid,adminPermission);
+    //TODO comment remove adminPermission(not needed)
+    addMember:function(gid,uid,adminPermission,callback){
+        console.log("add member "+uid+" to group "+gid);
+        getJsonQuery('addMember',{groupid:gid,
+                                  userid:uid},function(result){
+            console.log(result);            
+            if (callback && typeof(callback) === "function") {  
+                callback(result);  
+            }
+        });
     },
-    modifyMember:function(gid,uid,adminPermission){
-        GROUPDB_Dummy.modifyMember(gid,uid,adminPermission);
+    //TODO comment callback not needed yet, but later?
+    modifyMember:function(gid,uid,adminPermission,callback){
+        console.log("modify member "+uid+" of group "+gid);
+        getJsonQuery('modifyMember',{groupid:gid,
+                                     userid:uid,
+                                     adm:adminPermission},function(result){
+            console.log(result);            
+            if (callback && typeof(callback) === "function") {  
+                callback(result.res);  
+            }
+        });
     },
-    //TODO callback
+    //TODO comment
     removeMember:function(gid,uid,callback){
         GROUPDB_Dummy.removeMember(gid,uid);
-        callback(true);
+        console.log("remove member "+uid+" of group "+gid);
+        getJsonQuery('removeMember',{groupid:gid,
+                                     userid:uid},function(result){
+            console.log(result);            
+            if (callback && typeof(callback) === "function") {  
+                callback(result.res);  
+            }
+        });
     },
-    //TODO callback
+    //TODO comment
     getUser:function(uid,callback){
         getJsonQuery('getUser',{username:uid},function(result){
             console.log(result);
@@ -174,7 +207,7 @@ var GROUPDB={
             }
         });
     },
-    //TODO callback
+    //TODO comment
     isGroupnameValid:function(groupname,callback){
         getJsonQuery('isGroupnameValid',{gname:groupname},function(result){
             console.log(result);
@@ -185,7 +218,7 @@ var GROUPDB={
             }
         });
     },
-    //TODO callback
+    //TODO comment
     getUsersWith:function(uid,callback){
         getJsonQuery('getUsers',{searchString:uid},function(result){
             console.log(result);

@@ -27,7 +27,7 @@ function Group(gid,groupname,listOfMembers,description,creator){
     this.groupname=groupname || "no group";
     this.listOfMembers=listOfMembers || new Array(OC.currentUser());
     this.description=description || "no description";
-    this.creator=creator || OC.currentUser();
+    this.creator=creator || OC.currentUser;
     /* Methods */
     this.getGroupid = getGroupid;
     this.getGroupname = getGroupname;

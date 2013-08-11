@@ -74,11 +74,14 @@ class GroupMapper extends Mapper {
         foreach($selectedGroupids as $groupid){
             $params = array($groupid);
             $result = $this->execute($sql,$params);
-            $entity = new Group($result->fetchRow());
-            
-            $entity = $this->addMembersToGroup($entity);      
-            
-            array_push($group,$entity);
+            $resultRow = $result->fetchRow();
+            //check if there is a group with this id
+            //if there is one than great a group and add it to the group array
+            if($resultRow['groupid']==$groupid){
+                $entity = new Group($resultRow);
+                $entity = $this->addMembersToGroup($entity);      
+                array_push($group,$entity);
+            }
         }
         return $group;
     }
@@ -173,6 +176,126 @@ class GroupMapper extends Mapper {
             return true;
         }else{
             return false;        
+        }
+    }
+    
+    /**
+     * TODO
+     * @return bool if there is a group with this gid return true, otherwise false
+     */
+    private function isGroup($gid){
+        $sql = 'SELECT * FROM `'.$this->tableName.'` 
+                WHERE `groupid` = ?';
+        $params = array($gid);
+        $result = $this->execute($sql,$params)->fetchAll();
+        if(count($result)>0){
+            return true;
+        }else{
+            return false;        
+        }
+    }
+    
+    /**
+     * TODO
+     * @return bool if the query was successful return true, otherwise false
+     */
+    public function addMember($gid,$uid){
+        if($this->isGroup($gid)){
+            $sql = 'INSERT INTO `'.$this->tableMember.'`(`groupid`,
+                   `userid`,`admin`) VALUES(?, ?, ?)';
+                                              
+            $params = array($gid,$uid,false);
+            $result = $this->execute($sql,$params);
+            if($result>0){
+                return true;
+            }else{
+                return false;        
+            }
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * TODO
+     * @return bool if the query was successful return true, otherwise false
+     */
+    public function modifyMember($gid,$uid,$admin){
+        if($this->isGroup($gid)){
+            $sql = 'UPDATE `'.$this->tableMember.'` SET `admin` = ?
+                    WHERE `groupid` = ? AND `userid` = ?';
+            // convert to bool, because $admin is a string
+            if($admin=="true"){
+                $admin=true;
+            }else{
+                $admin=false;
+            }                                  
+            $params = array($admin,$gid,$uid);
+            $result = $this->execute($sql,$params);
+            if($result>0){
+                return true;
+            }else{
+                return false;        
+            }
+        }else{
+            return false;
+        }
+    }
+    /**
+     * TODO
+     * @return bool if the query was successful return true, otherwise false
+     */
+    public function removeMember($gid,$uid){
+        if($this->isGroup($gid)){
+            $sql = 'DELETE FROM `'.$this->tableMember.'` WHERE `groupid` = ? AND `userid` = ?';
+            $params = array($gid,$uid);
+            $result = $this->execute($sql,$params);
+            if($result>0){
+                return true;
+            }else{
+                return false;        
+            }
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * TODO
+     * @return bool if the query was successful return true, otherwise false
+     */
+    public function removeAllMemberFromGroup($gid){
+        if($this->isGroup($gid)){
+            $sql = 'DELETE FROM `'.$this->tableMember.'` WHERE `groupid` = ? ';
+            $params = array($gid);
+            $result = $this->execute($sql,$params);
+            if($result>0){
+                return true;
+            }else{
+                return false;        
+            }
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * TODO
+     * @return bool if the query was successful return true, otherwise false
+     */
+    public function removeGroup($gid){
+        if($this->isGroup($gid)){
+            $this->removeAllMemberFromGroup($gid);
+            $sql = 'DELETE FROM `'.$this->tableName.'` WHERE `groupid` = ?';
+            $params = array($gid);
+            $result = $this->execute($sql,$params) && $this->removeAllMemberFromGroup($gid);
+            if($result>0){
+                return true;
+            }else{
+                return false;        
+            }
+        }else{
+            return false;
         }
     }
 

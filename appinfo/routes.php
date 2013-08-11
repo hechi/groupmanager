@@ -89,3 +89,27 @@ $this->create('saveDescription', '/saveDescription/')->post()->action(
         App::main('PageController', 'saveDescription', $params, new DIContainer());
     }
 );
+$this->create('addMember', '/addMember/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'addMember', $params, new DIContainer());
+    }
+);
+$this->create('modifyMember', '/modifyMember/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'modifyMember', $params, new DIContainer());
+    }
+);
+$this->create('removeMember', '/removeMember/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'removeMember', $params, new DIContainer());
+    }
+);
+$this->create('removeGroup', '/removeGroup/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('PageController', 'removeGroup', $params, new DIContainer());
+    }
+);
