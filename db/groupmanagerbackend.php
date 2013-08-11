@@ -109,12 +109,12 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     }
 
     /**
-    * check if a group exists
-    * @param string $gid
+    * check if a group with the groupname exists
+    * @param string $groupname
     * @return bool
     */
-    public function groupExists($gid){
-        return $this->groupmapper->isGroup($gid);  
+    public function groupExists($groupname){
+        return $this->groupmapper->isGroupname($groupname);  
     }
 
     /**

@@ -340,9 +340,27 @@ class GroupMapper extends Mapper {
      * @return bool if there is a group with this gid return true, otherwise 
      *              false
      */
-    public function isGroup($gid){
+    private function isGroup($gid){
         $sql = 'SELECT * FROM `'.$this->tableGroup.'` 
                 WHERE `groupid` = ?';
+        $params = array($gid);
+        $result = $this->execute($sql,$params)->fetchAll();
+        if(count($result)>0){
+            return true;
+        }else{
+            return false;        
+        }
+    }
+    
+    /**
+     * check if the group with the groupname exists
+     * @param string groupname
+     * @return bool if there is a group with this groupname return true,
+     *              otherwise false
+     */
+    public function isGroupname($gid){
+        $sql = 'SELECT * FROM `'.$this->tableGroup.'` 
+                WHERE `groupname` = ?';
         $params = array($gid);
         $result = $this->execute($sql,$params)->fetchAll();
         if(count($result)>0){
