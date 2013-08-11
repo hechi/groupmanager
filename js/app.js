@@ -699,7 +699,7 @@ function topContent(){
         
         self.displayNewGroupDialog();
     });
-    self.newGroupField.keypress(function(event){
+    self.newGroupField.keyup(function(event){
         if(event.which==KEY_ENTER){
             self.createGroup();
         }else{
@@ -742,7 +742,7 @@ function leftContent(){
  * add right content actions
  */
 function rightContent(){
-    self.userSearchInput.keypress(function(event){
+    self.userSearchInput.keyup(function(event){
         console.log(self.userSearchInput.attr('value'));
         self.getUsers(self.userSearchInput.attr('value'));
     });
