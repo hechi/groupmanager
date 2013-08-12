@@ -1,7 +1,7 @@
 <!-- loaded by the /settings.php -->
 <div id="groupmanagerSettings" class="personalblock">
-    <!-- filled by the /js/settings.js -->
 <div id="notificationMod"></div>
+    <!-- filled by the /js/settings.js -->
     <fieldset id="groupmanagerSettings" >
         <legend><strong id="headText"></strong></legend>
         <input  id="groupUniqueCheckBox" type="checkbox" name="groupIdBox">

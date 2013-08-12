@@ -21,6 +21,10 @@
 * 
 */
 
+/**
+ * contructor that initialized the attributes if there is no parameter take 
+ * default options
+ */
 function Group(gid,groupname,listOfMembers,description,creator){
     /* Attributes */
     this.gid=gid || 0;
@@ -38,27 +42,51 @@ function Group(gid,groupname,listOfMembers,description,creator){
     this.isMember = isMember;
 }
 
+/*************** GETTER ***************/
+
+/**
+ * returns the groupid of this group
+ * @return int
+ */
 function getGroupid(){
     return this.gid;
 }
-
+/**
+ * returns the group name of this group
+ * @return string
+ */
 function getGroupname(){
-    //TODO check if preferences what the creatorid in the groupname
     return this.groupname;
 }
-
+/**
+ * returns an array with members
+ * @return array of users
+ */
 function getListOfMembers(){
     return this.listOfMembers;
 }
 
+/**
+ * return the description of this group
+ * @return string
+ */
 function getDescription(){
     return this.description;
 }
 
+/**
+ * returns the creator of this group
+ * @return string
+ */
 function getCreator(){
     return this.creator;
 }
 
+/**
+ * check if the given user is in the memberList
+ * @param string username
+ * @return boolean if the user is a member return true, otherwise false
+ */
 function isMember(uid){
     var result = false;
     for(var i = 0;i<this.listOfMembers.length;i++){
@@ -71,6 +99,11 @@ function isMember(uid){
     return result;
 }
 
+/**
+ * check if the given user is in the adminList
+ * @param string username
+ * @return boolean if the user is a admin return true, otherwise false
+ */
 function isUserAdmin(uid){
     var result = false;
     for(var i = 0;i<this.listOfMembers.length;i++){
@@ -82,5 +115,3 @@ function isUserAdmin(uid){
     }    
     return result;
 }
-
-

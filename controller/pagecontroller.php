@@ -54,11 +54,11 @@ class PageController extends Controller {
     }
     
     /**
+     * Redirects to the index page
+     *
      * @CSRFExemption
      * @IsAdminExemption
      * @IsSubAdminExemption
-     *
-     * Redirects to the index page
      */
     public function redirectToIndex(){
             $url = $this->api->linkToRoute('groupmanagerIndex');

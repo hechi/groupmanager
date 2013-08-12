@@ -36,7 +36,8 @@ class Group {
 	private $creator;
 
     /**
-     * contructor that initialized the attributes if there is no parameter
+     * contructor that initialized the attributes if there is no parameter take 
+     * default options
      */
 	public function __construct($fromRow=null){
 		$this->groupid = 0;
@@ -57,7 +58,6 @@ class Group {
      * @param row is an associative array
      */
 	public function fromRow($row){
-	    //TODO write it shorter
         //if there is an parameter with the name groupid
         //it happens if we want to create a new group
         if(isset($row['groupid'])){
@@ -185,11 +185,6 @@ class Group {
 		$this->groupname = $name;
 	}
 
-    //TODO not good to set member better to add and remove members
-	//public function setMember($memberList){
-	//	$this->member = $memberList;
-	//}
-	
 	/**
      * set a member as the creator of this group
      * @param string
@@ -270,9 +265,6 @@ class Group {
 	 * @param $user userid which should be remove from the list
 	 */	
 	public function removeMember($user){
-	       //TODO remove from members array
-	       //cautious there should be always the groupadmin in the members
-	       //array
 	       if(count($this->listOfMembers)>0){
 	            for ($i = 0; $i < count($this->listOfMembers); $i++) {
 	                if($user === $listOfMembers[$i]){
@@ -282,11 +274,6 @@ class Group {
 	        }
 	}
 	
-    //TODO not goot to set groupadmin better to add and remove groupadmins
-	//public function setAdmin($groupAdminList){
-	//	$this->groupadmin = $groupAdminList;
-	//}
-
 	/**
 	 * Add a userid as a admin to the group
 	 * @param $user userid which should be a member of the group
@@ -303,8 +290,6 @@ class Group {
 	 * @param $user userid which should be remove from the list
 	 */
 	public function removeAdmin($user){
-	        //TODO remove $groupadmin from groupadmin array
-	        //cautious there schould be ever at least one groupadmin
 	       if(count($this->listOfAdmins)>0){
 	            for ($i = 0; $i < count($this->listOfAdmins); $i++) {
 	                if($user === $listOfAdmins[$i]){
@@ -313,6 +298,4 @@ class Group {
                 }
 	        }
 	}
-
-	
 }

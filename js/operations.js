@@ -71,7 +71,7 @@ function jsonToGroupList(json){
 /**
  * parse a single json to a group object
  * @param json object with (groupid,groupname,commaSeperatedString,description,
- *                           groupcreator)
+ *                          groupcreator)
  * @return group object
  */
 function jsonToGroup(json){

@@ -19,7 +19,6 @@
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 *
 * Generate routes to methods (like a link or rather url's)
-* TODO example
 */
 
 namespace OCA\Groupmanager;

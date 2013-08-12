@@ -93,5 +93,4 @@ class Groupmanagerconfig {
     private static function setSettingByName($key,$value){
          return \OCP\Config::setSystemValue($key,$value);
     }
-    
 }

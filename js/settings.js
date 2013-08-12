@@ -22,12 +22,7 @@
 * 
 */
 
-/**
- * call the translation function of owncloud (core/js/js.js
- * @param string message to translate, it have been in the l10n/*.php files
- * @return string returns the translated string
- */
-
+/*********** elements of the template ***********/
 var self;
 var notificationMod;
 var headText;
@@ -76,16 +71,18 @@ function translate(msg){
 }
 
 /**
- * TODO
+ * request all setting informations from the server
+ * and set the result to the CheckBoxes
  */
 function loadSettings(){
     self.getJsonQuery("getSettings",null,function(result){
-        if(result.uniqueGroup == true){
+        console.log(result);
+        if(result.uniqueGroup == "true"){
             self.groupUniqueCheckBox.attr('checked','checked');
         }else{
             self.groupUniqueCheckBox.removeAttr('checked');
         }
-        if(result.autocomp == true){
+        if(result.autocomp == "true"){
             self.autocompletionCheckBox.attr('checked','checked');
         }else{
             self.autocompletionCheckBox.removeAttr('checked');
@@ -94,7 +91,11 @@ function loadSettings(){
 }
 
 /**
- * TODO
+ * send the selected values of the checkboxes to the server to save the
+ * settings. the server returns true if the options are written to the config
+ * file, otherwise false. A notification about the result is shown.
+ * @param bool true if the uniqueGroupCheckbox is selected, otherwise false
+ * @param bool true if the autocompletionCheckbox is selected, otherwise false
  */
 function saveSettings(ug,ac){
     self.getJsonQuery("saveSettings",{uniqueGroup:ug,autocomp:ac},function(result){
@@ -108,7 +109,8 @@ function saveSettings(ug,ac){
 }
 
 /**
- * TODO
+ * decide based on the given flag, whiche notification should be displayed
+ * @param int flags see on the top of this file
  */
 function notification(flag){
     switch(flag){
@@ -124,19 +126,22 @@ function notification(flag){
 }
 
 /**
- * TODO
+ * display the given error message
  */
 function displayError(msg){
     self.notificationMod.text(msg);
 }
 
 /**
- * TODO
+ * display a okay message
  */
 function displayOk(){
     self.notificationMod.text(self.translate("Settings have been saved"));
 }
 
+/**
+ * register all actions
+ */
 function actions(){
     self.save.click(function(){
         self.saveSettings(self.groupUniqueCheckBox.is(':checked'),self.autocompletionCheckBox.is(':checked'));
@@ -146,7 +151,7 @@ function actions(){
 }
 
 /**
- * TODO
+ * init needed HTML fields to have an easier useage in this document
  */
 function init(){
     this.self = this;
@@ -161,7 +166,7 @@ function init(){
 }
 
 /**
- * TODO
+ * fill the translated texts in the HTML fields
  */
 function fillWithText(){
     self.headText.text(self.translate("Groupmanager"));

@@ -44,7 +44,9 @@ class SettingController extends Controller {
     }
     
     /**
-     * TODO
+     * get the option value from the /config/config.php and return it as a
+     * json object
+     * @return json object with uniqueGroup and autocomp
      */
     public function getSettings(){
         $uniqueGroup = Groupmanagerconfig::getUniqueGroupIdSetting();
@@ -54,7 +56,10 @@ class SettingController extends Controller {
     }
     
     /**
-     * TODO
+     * save the sendet values to the /config/config.php file and return true
+     * if the write process was successful, otherwise false
+     * @return json object with the key res, res is true if the write operation
+     *                     was successful, otherwise return false
      */
     public function saveSettings(){
         $resUnique = Groupmanagerconfig::setUniqueGroupIdSetting($this->params('uniqueGroup'));

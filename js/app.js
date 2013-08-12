@@ -130,7 +130,6 @@ function displayError(msg){
     debugLog(msg);
 }
 
-//TODO: find a error sign
 /**
  * display a string and sign that the groupname is not valid and someone else
  * has taken it
@@ -233,18 +232,6 @@ function removeGroup(gid,element){
             alert("you dont have the permission to delete this group");
         }
     });
-
-/*
-    if(GROUPDB.getGroupWithId(gid).isUserAdmin(OC.currentUser)){
-        GROUPDB.removeGroup(gid);
-        $(document).find('.tipsy').hide();
-        element.remove();
-        self.hideRightContent();
-    }else{
-        //TODO
-        alert("you dont have the permission to delete this group");
-    }
-*/
 }
 
 /**
@@ -261,24 +248,17 @@ function removeMember(uid,element){
         if(self.memberlist.find('input:checked').length>1 || element.find('input:checked').length==0){
             GROUPDB.removeMember(self.getSelectedGroupid(),uid,function(result){
                 if(result){
-                    $(document).find('.tipsy').hide();//TODO tipsy does not remove
+                    // tipsy does not remove
+                    $(document).find('.tipsy').hide();
                     element.remove();
                 }
             });
-            /*
-            var result = GROUPDB.removeMember(self.getSelectedGroup().getGroupid(),uid);
-            if(result){
-                $(document).find('.tipsy').hide();//TODO tipsy does not remove
-                element.remove();
-            }
-            */
         }else{
             //TODO
             alert("can not remove all admin members");
         }
     }else{
         //TODO print error because only one member left
-        //TODO must have min of one admin
         alert("can not remove all members");
     }
 }
@@ -303,11 +283,6 @@ function createGroup(){
                     self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
                     self.debugLog("create group "+self.newGroupField.attr('value'));
                 });
-                /*
-                var resultGroupid=GROUPDB.saveGroup(self.newGroupField.attr('value'),new Array(new Array(OC.currentUser,true)),self.newDescription.val(),OC.currentUser);
-                self.grouplist.append(self.createLiElement(resultGroupid,self.newGroupField.attr('value'),true));
-                self.debugLog("create group "+self.newGroupField.attr('value'));
-                */
             }else{
                 self.displayNotValid();
             }
@@ -379,15 +354,6 @@ function selectGroup(element){
 /**
  * get the selected group
  * @return Group object of the selected Group
-function getSelectedGroup(){
-//TODO think think think
-    console.log("mist");
-    return GROUPDB.getGroupWithId(self.grouplist.find('.active').attr('id'));
-}
- */
-/**
- * get the selected group
- * @return Group object of the selected Group
  */
 function getSelectedGroupid(){
     return self.grouplist.find('.active').attr('id');
@@ -411,13 +377,6 @@ function loadGroup(gid){
                         self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
                     }
                 });
-            /*
-                var member = GROUPDB.getUser(memberList[i][0]);
-                if(member!=null){
-                    self.debugLog("add user "+member.uid+" to group "+group.getGroupname());
-                    self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
-                }
-            */
             }
             self.groupdescription.val(group.getDescription());
             if(group!=null&&group.isUserAdmin(OC.currentUser)){
@@ -482,7 +441,6 @@ function createUser(uid,name){
                     //TODO
                     alert("user is already member of this group");
                 }else{
-                    //TODO callback
                     GROUPDB.addMember(group.getGroupid(),uid,function(result){
                         if(result){
                             self.debugLog("add user:"+uid+" to group "+group.getGroupid()+" was successful");
@@ -498,7 +456,9 @@ function createUser(uid,name){
 }
 
 /**
- *
+ * modifiy a member from the active group with the given permission
+ * @param string username
+ * @param bool new permission, true if comes a admin, otherwise false
  */
 function modifyMember(uid,permission){
     GROUPDB.modifyMember(self.getSelectedGroupid(),uid,permission,function(result){
@@ -511,7 +471,7 @@ function modifyMember(uid,permission){
 }
 
 /**
- * TODO permission checking and should the user have the permission to remove himself?
+ * TODO should the user have the permission to remove himself?
  * create a HTML table row with the given parameters
  * @param int uid userid
  * @param string name which should be displayed
@@ -528,7 +488,6 @@ function createMember(uid,name,admin,adminPermission){
     cellName.text(name);
     
     //cell for admin status
-    //TODO action if it change and if the user have the permission to change it
     var cellAdmin = $('<td>');
     cellAdmin.addClass("actions");
     cellAdmin.addClass("admin");
@@ -593,13 +552,6 @@ function addMember(uid,admin,adminPermission){
             tbody.append(self.createMember(member.uid,member.displayname,admin,adminPermission));
         }
     });
-/*
-    var member = GROUPDB.getUser(uid);
-    var tbody = self.memberlist.children('tbody');
-    if(tbody.find('#'+uid).length<1){
-        tbody.append(self.createMember(member.uid,member.displayname,member.email,admin,adminPermission));
-    }
-*/
 }
 
 /**
@@ -648,13 +600,6 @@ function getGroups(){
             }
         }
     });
-/*
-    var list=GROUPDB.getGroups(OC.currentUser);
-    for(var i=0;i<list.length;i++){
-        self.addGroup(list[i]);
-        self.debugLog("add group "+list[i].getGroupname());
-    }
-*/
 }
 
 /**
@@ -664,7 +609,6 @@ function topContent(){
     self.newGroupButton.click(function(){
         self.newGroup();
         self.debugLog("show newGroup");
-        
         self.displayNewGroupDialog();
     });
     self.newGroupField.keyup(function(event){
@@ -679,9 +623,6 @@ function topContent(){
                     self.notifyGroupCreation(self.NOTVALID);
                 }
             });
-        /*
-            self.checkGroupname(self.newGroupField.attr('value'));
-        */
         }
     });
     //text disappear if user click into that field
@@ -701,7 +642,6 @@ function topContent(){
 /**
  * add left content actions
  */
-
 function leftContent(){
     getGroups();
 }
@@ -741,6 +681,9 @@ function regActions(){
     rightContent();
 }
 
+/**
+ * start modifieing
+ */
 $(document).ready(function () {
     // be sure that all routes from /appinfo/routes.php are loaded
 	OC.Router.registerLoadedCallback(function(){

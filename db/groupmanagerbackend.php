@@ -47,40 +47,38 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
 	public function __construct($api){
 	    $this->groupmapper = Groupmapper::getInstance($api);
     }
+    
     /**
-    * @brief Check if backend implements actions
-    * @param int $actions bitwise-or'ed actions
-    * @return boolean
-    *
-    * Returns the supported actions as int to be
-    * compared with OC_GROUP_BACKEND_CREATE_GROUP etc.
-    */
+     * Check if backend implements actions
+     * Returns the supported actions as int to be
+     * compared with OC_GROUP_BACKEND_CREATE_GROUP etc.
+     * @param int $actions bitwise-or'ed actions
+     * @return boolean
+     *
+     */
     public function implementsActions($actions){
         //TODO check again
         return (bool)(OC_GROUP_BACKEND_GET_DISPLAYNAME & $actions);
     }
 
     /**
-    * @brief is user in group?
-    * @param string $uid uid of the user
-    * @param string $gid gid of the group
-    * @return bool
-    *
-    * Checks whether the user is member of a group or not.
-    */
+     * Checks whether the user is member of a group or not.
+     * @param string $uid uid of the user
+     * @param string $gid gid of the group
+     * @return bool
+     */
     public function inGroup($uid, $gid){
         $group = $this->groupmapper->getGroup($gid);
         return $group->isInGroup($uid);
     }
 
     /**
-    * @brief Get all groups a user belongs to
-    * @param string $uid Name of the user
-    * @return array with group names
-    *
-    * This function fetches all groups a user belongs to. It does not check
-    * if the user exists at all.
-    */
+     * This function fetches all groups a user belongs to. It does not check
+     * if the user exists at all.
+     * @param string $uid Name of the user
+     * @return array with group names
+     *
+     */
     public function getUserGroups($uid){
         $groups = $this->groupmapper->getGroups($uid);
         $groupnames = array();
@@ -91,14 +89,13 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     }
 
     /**
-    * @brief get a list of all groups
-    * @param string $search
-    * @param int $limit
-    * @param int $offset
-    * @return array with group names
-    *
-    * Returns a list with all groups
-    */
+     * get a list of all groups
+     * @param string $search
+     * @param int $limit
+     * @param int $offset
+     * @return array with group names
+     *
+     */
     public function getGroups($search = '', $limit = -1, $offset = 0){
         $groups = $this->groupmapper->getAllGroups();
         $groupnames = array();
@@ -109,22 +106,22 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
     }
 
     /**
-    * check if a group with the groupname exists
-    * @param string $groupname
-    * @return bool
-    */
+     * check if a group with the groupname exists
+     * @param string $groupname
+     * @return bool
+     */
     public function groupExists($groupname){
         return $this->groupmapper->isGroupname($groupname);  
     }
 
     /**
-    * @brief get a list of all users in a group
-    * @param string $gid
-    * @param string $search
-    * @param int $limit
-    * @param int $offset
-    * @return array with user ids
-    */
+     * get a list of all users in a group
+     * @param string $gid
+     * @param string $search
+     * @param int $limit
+     * @param int $offset
+     * @return array with user ids
+     */
     public function usersInGroup($gid, $search = '', $limit = -1, $offset = 0){
         $group = $this->groupmapper->getGroup($gid);
         return $group->getMemberList();   
