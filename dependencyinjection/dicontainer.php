@@ -30,6 +30,7 @@ use \OCA\AppFramework\DependencyInjection\DIContainer as BaseContainer;
 
 // import the Controllers
 use \OCA\Groupmanager\Controller\PageController;
+use \OCA\Groupmanager\Controller\SettingController;
 
 // import the ItemMapper
 use \OCA\Groupmanager\DB\GroupMapper;
@@ -44,6 +45,10 @@ class DIContainer extends BaseContainer {
 
         $this['PageController'] = function($c){
             return new PageController($c['API'], $c['Request']);
+        };
+        
+        $this['SettingController'] = function($c){
+            return new SettingController($c['API'], $c['Request']);
         };
         
         /**

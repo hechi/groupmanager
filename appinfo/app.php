@@ -34,7 +34,7 @@ $api->addNavigationEntry(array(
   'name' => $api->getTrans()->t('Groupmanager')
 
 ));
-
+//TODO check if appframework is enabled
 // register the settings in the admin panel
-//$api->registerAdmin('settings');
+$api->registerAdmin('settings');
 

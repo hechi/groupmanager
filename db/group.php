@@ -159,12 +159,12 @@ class Group {
      * @return array with groupid groupname member groupadmin description (associative array)
      */        
 	public function getProperties(){
-	        return array('groupid' => $this->groupid, 
-	                     'groupname' => $this->groupname,
+	        return array('groupid' => $this->getGroupid(), 
+	                     'groupname' => $this->getGroupname(),
 	                     'members' => $this->getMemberListAsStr(),
 	                     'admins' => $this->getAdminListAsStr(),
-	                     'description'=> $this->description,
-	                     'groupcreator' => $this->creator);	
+	                     'description'=> $this->getDescription(),
+	                     'groupcreator' => $this->getCreator());	
 	}
 
 /*************** SETTER ***************/

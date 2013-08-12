@@ -35,6 +35,7 @@ use \OCA\AppFramework\Http\Request;
 // import the Group, that represents the Entry in the database
 use OCA\Groupmanager\Db\Groupmapper;
 use OCA\Groupmanager\Db\Group;
+use OCA\Groupmanager\Lib\Groupmanagerconfig;
 
 class PageController extends Controller {
 
@@ -108,6 +109,10 @@ class PageController extends Controller {
 	    //renderJSON Method can convert that to a json object
 	    $array = array();
 	    foreach($groups as $group){
+	        //check if the admin whant a uniqueGroupId with the 
+	        if(Groupmanagerconfig::getUniqueGroupIdSetting()===true){
+	            $group->setGroupname($group->getGroupname().":".$group->getGroupid());
+	        }
 	        array_push($array,$group->getProperties());
 	    }
 	    return $this->renderJSON($array);	
@@ -123,6 +128,9 @@ class PageController extends Controller {
      */
 	public function getGroup(){
 	    $group = $this->groupmapper->getGroup($this->params('groupid'));
+	    if(Groupmanagerconfig::getUniqueGroupIdSetting()===true){
+	        $group->setGroupname($group->getGroupname().":".$group->getGroupid());
+	    }
 	    return $this->renderJSON($group->getProperties());
 	}
 	
@@ -199,20 +207,7 @@ class PageController extends Controller {
             // check if autocompletion is true, than we are allow to search
             // in the username for characters, else it must be the whole
             // username
-            /*TODO
-            if($this->getAutocompletionSetting()===true){
-                // check if the username contains the searchString
-                if(stripos($user,$searchString)!==false){
-                    // push the user in the return array
-                    array_push($params,$user);
-                }
-            }else if($searchString===$user){
-                // only push the username in the array if it is the same as
-                // the searchsSring
-                array_push($params,$user);
-            }
-            */
-            if(stripos($user,$searchString)!==false){
+            if((Groupmanagerconfig::getAutocompletionSetting()===true && stripos($user,$searchString)!==false) || $searchString===$user){
                 // push the user in the return array
                 $displayName = \OCP\User::getDisplayName($user);
                 $more = array('uid'=>$user,'displayName'=>$displayName);

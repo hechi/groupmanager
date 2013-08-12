@@ -129,34 +129,4 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
         $group = $this->groupmapper->getGroup($gid);
         return $group->getMemberList();   
     }
-	
-	//TODO: make a better static Class for the settings
-	
-	/**
-     * Get the value of the uniqueGroupId from the /config/config.php
-     * @return bool: Returns True if The Value is Yes, otherwise False
-     */
-    private function getUniqueGroupIdSetting(){
-        $value = $this->getSettingByName('groupmanagerUniqueGroupId');
-        return $value;
-    }
-    
-    /**
-     * Get the value of the autocompletionBox from the /config/config.php
-     * @return bool: Returns True if The Value is Yes, otherwise False
-     */
-    private function getAutocompletionSetting(){
-        $value = $this->getSettingByName('groupmanagerAutocompletionBox');
-        return $value;
-    }
-    
-    /**
-     * Get a value of the settingAttribute from the /config/config.php
-     * @param $key: settingAttribute in the /config/config.php
-     * @return string: Returns the string of the /config/config.php
-     */
-    private function getSettingByName($key){
-        return \OCP\Config::getSystemValue($key, '');
-    }
-    
 }

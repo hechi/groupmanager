@@ -443,35 +443,6 @@ function clearRightContent(){
 }
 
 /**
- * check if groupname is not taken
- * @param string characters of the groupname
- * @return boolean true if the groupname is valid
- */
-/*
-function checkGroupname(groupname){
-    self.notifyGroupCreation(self.CHECKING);
-    GROUPDB.isGroupnameValid(groupname,function(valid){
-        if(valid){
-            self.notifyGroupCreation(self.OK);
-            return true;        
-        }else{
-            self.notifyGroupCreation(self.NOTVALID);
-            return false;
-        }
-    });
-    /*
-    var valid=GROUPDB.isGroupnameValid(groupname);
-    if(valid){
-        self.notifyGroupCreation(self.OK);
-        return true;        
-    }else{
-        self.notifyGroupCreation(self.NOTVALID);
-        return false;
-    }
-}
-*/
-
-/**
  * get users that matches the string in the userSearchResult field
  * @param string characters of the username
  */
@@ -490,20 +461,6 @@ function getUsers(username){
             }
         }
     });
-    /*
-    var userList = GROUPDB.getUsersWith(username);
-    self.userSearchResult.children(".userBox").remove();
-    for(var i = 0;i<userList.length&&i<=6;i++){
-        if(i>=6){
-            var moreUser = $('<textfield>');
-            moreUser.text("to many users...");
-            moreUser.addClass("userBox");
-            self.userSearchResult.append(moreUser);
-        }else{
-            self.userSearchResult.append(createUser(userList[i].uid,userList[i].displayname));
-        }
-    }
-    */
 }
 
 /**

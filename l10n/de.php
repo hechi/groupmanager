@@ -15,5 +15,7 @@
 "Groupname" => "Gruppenname",
 "please enter a new group name" => "Bitte geben Sie einen neuen Gruppennamen ein",
 "group name already taken" => "Gruppenname bereits vergeben",
-"expand for description" => "für die Beschreibung aufklappen"
+"expand for description" => "für die Beschreibung aufklappen",
+"Settings have been saved" => "Einstellungen wurden gespeichert",
+"Settings were NOT saved" => "Einstellungen wurden NICHT gespeichert"
 );

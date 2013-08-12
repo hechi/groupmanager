@@ -19,7 +19,7 @@
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 *
 * Generate routes to methods (like a link or rather url's)
-* 
+* TODO example
 */
 
 namespace OCA\Groupmanager;
@@ -32,7 +32,7 @@ use \OCA\Groupmanager\DependencyInjection\DIContainer;
  ************************/
 
 /**
- * Normal Routes
+ * App Routes
  */
 
 // Route to the index Method from pagecontroller.php
@@ -42,29 +42,24 @@ $this->create('groupmanagerIndex', '/')->action(
         App::main('PageController', 'index', $params, new DIContainer());
     }
 );
-
-//TODO
 $this->create('getGroups', '/getGroups/')->post()->action(
     function($params){
         // call the index method on the class PageController
         App::main('PageController', 'getGroups', $params, new DIContainer());
     }
 );
-//TODO
 $this->create('getGroup', '/getGroup/')->post()->action(
     function($params){
         // call the index method on the class PageController
         App::main('PageController', 'getGroup', $params, new DIContainer());
     }
 );
-//TODO
 $this->create('saveGroup', '/saveGroup/')->post()->action(
     function($params){
         // call the index method on the class PageController
         App::main('PageController', 'saveGroup', $params, new DIContainer());
     }
 );
-//TODO
 $this->create('getUsers', '/getUsers/')->post()->action(
     function($params){
         // call the index method on the class PageController
@@ -111,5 +106,21 @@ $this->create('removeGroup', '/removeGroup/')->post()->action(
     function($params){
         // call the index method on the class PageController
         App::main('PageController', 'removeGroup', $params, new DIContainer());
+    }
+);
+
+/**
+ * Settings Routes
+ */
+$this->create('getSettings', '/getSettings/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('SettingController', 'getSettings', $params, new DIContainer());
+    }
+);
+$this->create('saveSettings', '/saveSettings/')->post()->action(
+    function($params){
+        // call the index method on the class PageController
+        App::main('SettingController', 'saveSettings', $params, new DIContainer());
     }
 );
