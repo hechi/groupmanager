@@ -42,6 +42,7 @@ var expandPic;
 var groupdescription;
 var groupdescriptionsave;
 var modDescription;
+var newDescription;
 
 /*********** STATUS-FLAGS for notification of creating process ***********/
 var ERROR = -2;     // an error appears
@@ -166,8 +167,6 @@ function displayLoading(){
  * show the dialog to add group
  */
 function displayNewGroupDialog(){
-    self.newGroupField.attr('value',self.translate("Groupname"));
-    self.newDescription.val(self.translate("Description"));
     self.expandNewGroup.fadeIn("fast");
 }
 
@@ -624,10 +623,6 @@ function topContent(){
                 }
             });
         }
-    });
-    //text disappear if user click into that field
-    self.newGroupField.click(function(){
-        self.newGroupField.attr('value','');
     });
     //cancle button fade out the new group dialog
     self.newGroupCancle.click(function(){

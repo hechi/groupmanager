@@ -110,7 +110,7 @@ class PageController extends Controller {
 	    $array = array();
 	    foreach($groups as $group){
 	        //check if the admin whant a uniqueGroupId with the 
-	        if(Groupmanagerconfig::getUniqueGroupIdSetting()===true){
+	        if(Groupmanagerconfig::getUniqueGroupIdSetting()=="true"){
 	            $group->setGroupname($group->getGroupname().":".$group->getGroupid());
 	        }
 	        array_push($array,$group->getProperties());
@@ -128,7 +128,7 @@ class PageController extends Controller {
      */
 	public function getGroup(){
 	    $group = $this->groupmapper->getGroup($this->params('groupid'));
-	    if(Groupmanagerconfig::getUniqueGroupIdSetting()===true){
+	    if(Groupmanagerconfig::getUniqueGroupIdSetting()=="true"){
 	        $group->setGroupname($group->getGroupname().":".$group->getGroupid());
 	    }
 	    return $this->renderJSON($group->getProperties());
@@ -207,7 +207,7 @@ class PageController extends Controller {
             // check if autocompletion is true, than we are allow to search
             // in the username for characters, else it must be the whole
             // username
-            if((Groupmanagerconfig::getAutocompletionSetting()===true && stripos($user,$searchString)!==false) || $searchString===$user){
+            if((Groupmanagerconfig::getAutocompletionSetting()=="true" && stripos($user,$searchString)!==false) || $searchString===$user){
                 // push the user in the return array
                 $displayName = \OCP\User::getDisplayName($user);
                 $more = array('uid'=>$user,'displayName'=>$displayName);
