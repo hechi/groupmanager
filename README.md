@@ -34,14 +34,17 @@ Maintainers:
 Developer setup:
 ----------------
 - clone latest appframework
+
 ```bash
-git clone git://github.com/owncloud/appframework.git
+git clone git@github.com:owncloud/appframework.git
 ```
 - clone this repository 
+
 ```bash
-git clone git://github.com/hechi/groupmanager.git
+git clone git@github.com:hechi/groupmanager.git
 ```
 - link both into your *owncloud/apps/* directory
+
 ```bash
 ln -s /path/to/appframework appframework
 ln -s /path/to/groupmanager groupmanager
