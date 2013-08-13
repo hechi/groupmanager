@@ -12,11 +12,13 @@
     </div>
 </div>
 <!-- the left list of groups, where the user is member of -->
-<ul id="grouplist" class="hascontrols">
-    <!-- filled by the /js/app.js -->
-</ul>
+<div id="left">
+    <ul id="grouplist" class="hascontrols">
+        <!-- filled by the /js/app.js -->
+    </ul>
+</div>
 <!-- content of the activated group -->
-<div id="rightcontent" class="hidden">
+<div id="right" class="hidden">
 	<div id="userSearchResult" class="userSearch">
 	    <input id="userSearchInput" class=" svg" placeholder="{{trans('Search Users')}}" type="search"/></input>
 	</div>

@@ -25,41 +25,11 @@
 /**
  * Create your custom styles in here
  */
-#app {
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        padding: 2em;
-}
-
-#rightcontent, .rightcontent { 
-    position:auto;
-    width:77%;
-    top:6.4em;
-    left:25em; 
-    overflow:auto
-}
-
-.heading {
-        margin: 0 0 1em 0;
-        font-size: 12pt;
-        font-weight: bold;
-}
-
-.centered {
-        margin: auto;
-}
-
-.paragraph {
-        line-height: 1.5;
-        padding-bottom: 1em;
-}
 
 .controls {
     position: fixed;
     width: 100%;
     height: 2.8em;
-    padding: 0px 70px 0px 0.5em;
-    margin: 0px;
     -moz-box-sizing: border-box;
     box-shadow: 0px -3px 7px rgb(0, 0, 0);
     background: none repeat scroll 0% 0% rgb(238, 238, 238);
@@ -94,8 +64,6 @@
     margin: 0px;
     margin-left:-5px;
     margin-top:-36px;
-    /*margin-left:10px;*/
-    /*margin-top:36px;*/
     -moz-box-sizing: border-box;
     box-shadow: 0px -3px 7px rgb(0, 0, 0);
     background: none repeat scroll 0% 0% rgb(238, 238, 238);
@@ -105,7 +73,8 @@
 
 .userSearch {
     position: relative; 
-    margin-top:10px;
+    margin-top:2.8em;
+    padding-top:10px;
     padding-bottom:10px;
     border-bottom: 1px solid #DDDDDD;
 }
@@ -124,7 +93,6 @@
   margin: 30px auto;
   margin-left:5px;
 }
-
 
 .userBox:hover
 {
@@ -150,27 +118,38 @@
     height:20px;
 }
 
+#right { 
+    margin:top auto;
+    position:relative;
+    width:80%;
+    overflow:auto;
+    float:right;
+    z-index:49;
+}
+
+#left{
+    width:20%;
+    height:100%;
+    overflow:hidden;
+    float:left;
+}
+
+
 /* MEMBERLIST (TABLE)*/
 #memberlist { 
     position:auto;
     width:100%;
 }
 #memberlist > thead > tr {
-    position:auto;
-    width:100%; 
 }
 
 #memberlist > thead > tr > td {
-    position:auto;
     padding-left:10px;
 }
 
 #memberlist > tbody {
-    width: 100%;
-    padding-bottom: 300px;
     z-index: 1;
 }
-#memberlist { }
 #memberlist td {
     -moz-box-sizing: border-box; 
     -webkit-box-sizing: border-box; 
@@ -203,7 +182,6 @@
     -o-transition:opacity 200ms; 
     transition:opacity 200ms;
     float:left;
-    margin:.5em 0 0 15px;
 }
 #memberlist tbody > tr > td.name > input[type="checkbox"]:hover:first-child {
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; 
@@ -223,8 +201,6 @@
     -moz-transition:background-image 500ms; 
     -o-transition:background-image 500ms; 
     transition:background-image 500ms;
-    background-repeat:no-repeat !important;
-    background-position: 10px center !important;
 }
 
 #memberlist tbody > tr > td .delete {
@@ -245,18 +221,13 @@
     z-index: 200;
 }
 #member {
-    position: fixed !important;
-    width: 100%;
     background-color: white; color: #333333;
-    border-radius: 3px; box-shadow: 0 0 10px #888888;
-    padding: 10px;
-    top: 8em; left: 28em;
     z-index: 101;
 }
 /* GROUPLIST LEFTCONTENT*/
 #grouplist, .grouplist {
     position:relative; 
-    width:20%; 
+    width:100%; 
     overflow:auto; 
     height:100%;
     background:#f8f8f8; 
@@ -306,4 +277,3 @@
     padding:0 1em 0 0; 
     float:right; 
 }
-

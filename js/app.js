@@ -59,7 +59,7 @@ var KEY_ENTER = 13;
 function init(){
     this.self = this;
     //ids
-    self.rightcontent=$("#rightcontent");
+    self.rightcontent=$("#right");
     self.newGroupButton=$("#newGroupButton");
     self.newGroupField=$("#newGroupField");
     self.grouplist=$("#grouplist");
