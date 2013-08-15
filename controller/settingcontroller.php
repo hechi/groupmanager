@@ -28,9 +28,6 @@ namespace OCA\Groupmanager\Controller;
 
 // import the AppFramwork classes
 use \OCA\AppFramework\Controller\Controller;
-use \OCA\AppFramework\Db\DoesNotExistException;
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Http\Request;
 use \OCA\Groupmanager\Lib\Groupmanagerconfig;
 
 class SettingController extends Controller {
@@ -51,7 +48,10 @@ class SettingController extends Controller {
     public function getSettings(){
         $uniqueGroup = Groupmanagerconfig::getUniqueGroupIdSetting();
         $autocomp = Groupmanagerconfig::getAutocompletionSetting();
-        $array = array('uniqueGroup'=>$uniqueGroup,'autocomp'=>$autocomp);
+        $searchOption = Groupmanagerconfig::getSearchOption();
+        $array = array('uniqueGroup'=>$uniqueGroup,
+                       'autocomp'=>$autocomp,
+                       'searchOption'=>$searchOption);
         return $this->renderJSON($array);
     }
     
@@ -64,7 +64,8 @@ class SettingController extends Controller {
     public function saveSettings(){
         $resUnique = Groupmanagerconfig::setUniqueGroupIdSetting($this->params('uniqueGroup'));
         $resAuto = Groupmanagerconfig::setAutocompletionSetting($this->params('autocomp'));
-        $res = $resUnique && $resAuto;
+        $resSearch = Groupmanagerconfig::setSearchOption($this->params('searchOption'));
+        $res = $resUnique && $resAuto && $resSearch;
         $array = array('res'=>$res);
         return $this->renderJSON($array);
     }

@@ -28,9 +28,7 @@ namespace OCA\Groupmanager\Controller;
 
 // import the AppFramwork classes
 use \OCA\AppFramework\Controller\Controller;
-use \OCA\AppFramework\Db\DoesNotExistException;
 use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Http\Request;
 
 // import the Group, that represents the Entry in the database
 use OCA\Groupmanager\Db\Groupmapper;
@@ -100,11 +98,7 @@ class PageController extends Controller {
 	 * @return json object
      */
 	public function getGroups(){
-	    try{
-	        $groups = $this->groupmapper->getGroups($this->api->getUserId());
-	    }catch(DoesNotExistException $e){
-	        //TODO throw exception
-	    }
+        $groups = $this->groupmapper->getGroups($this->api->getUserId());
 	    //extract all attributes as a associative array, because the 
 	    //renderJSON Method can convert that to a json object
 	    $array = array();
@@ -199,20 +193,45 @@ class PageController extends Controller {
         $searchString = $this->params('searchString');
                 
         //\OCP\User::getUsers($search = '', $limit = null, $offset = null);
-        $users = \OCP\User::getUsers($searchString);
+        if(Groupmanagerconfig::getSearchOption()==Groupmanagerconfig::$SEARCHUSERNAME){
+            $users = \OCP\User::getUsers($searchString);
+        }else{
+            $users = \OCP\User::getUsers();
+        }
         // create a array with parameters if need
 		$params = array();
 		// check for usernames with the searchstring
         foreach($users as $user){
+            // extract displayname and build array
+            $displayName = \OCP\User::getDisplayName($user);
+            $more = array('uid'=>$user,'displayName'=>$displayName);
             // check if autocompletion is true, than we are allow to search
             // in the username for characters, else it must be the whole
             // username
-            if((Groupmanagerconfig::getAutocompletionSetting()=="true" && stripos($user,$searchString)!==false) || $searchString===$user){
-                // push the user in the return array
-                $displayName = \OCP\User::getDisplayName($user);
-                $more = array('uid'=>$user,'displayName'=>$displayName);
-                array_push($params,$more);
+            if(Groupmanagerconfig::getSearchOption()==Groupmanagerconfig::$SEARCHUSERNAME){
+                //search for username
+                if(((Groupmanagerconfig::getAutocompletionSetting()=="true" && stripos($user,$searchString)!==false))
+                    || $searchString===$user){
+                    // push the user in the return array
+                    array_push($params,$more);
+                }
+            }else if(Groupmanagerconfig::getSearchOption()==Groupmanagerconfig::$SEARCHDISPLAYNAME){
+                if(((Groupmanagerconfig::getAutocompletionSetting()=="true" && stripos($displayName,$searchString)!==false))
+                    || $searchString===$displayName){
+                    // push the user in the return array
+                    array_push($params,$more);
+                }
+            }else if(Groupmanagerconfig::getSearchOption()==Groupmanagerconfig::$SEARCHBOTH){
+                if((Groupmanagerconfig::getAutocompletionSetting()=="true") 
+                    && (stripos($user,$searchString)!==false 
+                       || stripos($displayName,$searchString)!==false)
+                    || ($searchString===$user 
+                       || $searchString===$displayName)){
+                    // push the user in the return array
+                    array_push($params,$more);
+                }
             }
+            
         }
 		        
         // give back all information to the website as an JSON Object

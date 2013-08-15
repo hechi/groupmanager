@@ -31,6 +31,13 @@ var groupUniqueCheckBox;
 var autocompletionText;
 var autocompletionCheckBox;
 var save;
+var searchOption;
+var searchUsername;
+var searchDisplayName;
+var searchBoth;
+var searchUsernameRadio;
+var searchDisplayNameRadio;
+var searchBothRadio;
 
 /*********** STATUS-FLAGS for notification ***********/
 var ERROR = -1;
@@ -87,6 +94,16 @@ function loadSettings(){
         }else{
             self.autocompletionCheckBox.removeAttr('checked');
         }
+        console.log(typeof(result.searchOption));
+        if(result.searchOption.toString() == "1"){
+            self.searchUsernameRadio.attr('checked','checked');
+        }else if(result.searchOption.toString() == "2"){
+            self.searchDisplayNameRadio.attr('checked','checked');
+        }else if(result.searchOption.toString() == "3"){
+            self.searchBothRadio.attr('checked','checked');
+        }else{
+            self.searchUsernameRadio.attr('checked','checked');
+        }
     });
 }
 
@@ -96,9 +113,10 @@ function loadSettings(){
  * file, otherwise false. A notification about the result is shown.
  * @param bool true if the uniqueGroupCheckbox is selected, otherwise false
  * @param bool true if the autocompletionCheckbox is selected, otherwise false
+ * @param int 1 for username, 2 for display name and 3 for both
  */
-function saveSettings(ug,ac){
-    self.getJsonQuery("saveSettings",{uniqueGroup:ug,autocomp:ac},function(result){
+function saveSettings(ug,ac,so){
+    self.getJsonQuery("saveSettings",{uniqueGroup:ug,autocomp:ac,searchOption:so},function(result){
         console.log(result);
         if(result.res == true){
             self.notification(self.OK);
@@ -144,9 +162,11 @@ function displayOk(){
  */
 function actions(){
     self.save.click(function(){
-        self.saveSettings(self.groupUniqueCheckBox.is(':checked'),self.autocompletionCheckBox.is(':checked'));
+        var resSearchOption = $("input[name='searchOption']:checked").attr('value');
+        self.saveSettings(self.groupUniqueCheckBox.is(':checked'),self.autocompletionCheckBox.is(':checked'),resSearchOption);
         console.log("Settings: unique "+self.groupUniqueCheckBox.is(':checked'));
         console.log("Settings: autocomp "+self.autocompletionCheckBox.is(':checked'));
+        console.log("Settings: searchOption "+resSearchOption);
     });
 }
 
@@ -162,6 +182,14 @@ function init(){
     self.autocompletionText = $("#autocompletionText");
     self.autocompletionCheckBox = $("#autocompletionCheckBox");
     self.save = $("#save");
+    self.searchOption = $("#searchOption");
+    self.searchUsername = $("#searchUsername");
+    self.searchDisplayName = $("#searchDisplayName");
+    self.searchBoth = $("#searchBoth");
+    self.searchUsernameRadio = $("#searchUsernameRadio");
+    self.searchDisplayNameRadio = $("#searchDisplayNameRadio");
+    self.searchBothRadio = $("#searchBothRadio");
+    
     self.fillWithText();
 }
 
@@ -170,9 +198,13 @@ function init(){
  */
 function fillWithText(){
     self.headText.text(self.translate("Groupmanager"));
-    self.groupIdentifierText.text(self.translate("Unique groupidentifier"));
+    self.groupIdentifierText.text(self.translate("Unique group identifier"));
     self.autocompletionText.text(self.translate("Autocompletion"));
     self.save.text(self.translate("Save"));
+    self.searchOption.text(self.translate("What is the search key for users?"));
+    self.searchUsername.text(self.translate("username"));
+    self.searchDisplayName.text(self.translate("display name"));
+    self.searchBoth.text(self.translate("both"));
 }
 
 $(document).ready(function () {

@@ -8,7 +8,7 @@
 "Description" => "Beschreibung",
 "Save" => "Speichern",
 "Delete" => "Löschen",
-"Unique groupidentifier" => "Eindeutige Gruppenkennung",
+"Unique group identifier" => "Eindeutige Gruppenkennung",
 "Yes" => "Ja",
 "Autocompletion" => "Autovervollständigung",
 "Search Users" => "Suche Benutzer",
@@ -17,5 +17,9 @@
 "group name already taken" => "Gruppenname bereits vergeben",
 "expand for description" => "für die Beschreibung aufklappen",
 "Settings have been saved" => "Einstellungen wurden gespeichert",
-"Settings were NOT saved" => "Einstellungen wurden NICHT gespeichert"
+"Settings were NOT saved" => "Einstellungen wurden NICHT gespeichert",
+"What is the search key for users?" => "Was ist das Suchkriterium für Benutzer?",
+"username" => "Benutzernamen",
+"display name" => "Anzeigenamen",
+"both" => "beides"
 );

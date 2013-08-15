@@ -24,7 +24,13 @@
 
 namespace OCA\Groupmanager\Lib;	
 
+
 class Groupmanagerconfig {
+
+    /* status for the search options*/
+    public static $SEARCHUSERNAME = 1;
+    public static $SEARCHDISPLAYNAME = 2;
+    public static $SEARCHBOTH = 3;
 
 	/**
      * Get the value of the uniqueGroupId from the /config/config.php
@@ -50,6 +56,21 @@ class Groupmanagerconfig {
         //default : true
         if($value===''){
             $value = true;
+        }
+        return $value;
+    }
+    
+    /**
+     * Get the value of the search option from the /config/config.php
+     * @return int: 1 for username, 2 for displayName or 3 for both, if none
+     *              of them is set 1 is the default return value
+     */
+    public static function getSearchOption(){
+        $value = Groupmanagerconfig::getSettingByName('groupmanagerSearchOption');
+        //if the autocompletion is not set yet, than return default value 
+        //default : true
+        if($value<1 || $value>3 || $value===''){
+            $value = 1;
         }
         return $value;
     }
@@ -81,6 +102,16 @@ class Groupmanagerconfig {
      */
     public static function setAutocompletionSetting($value){
         return Groupmanagerconfig::setSettingByName('groupmanagerAutocompletionBox',$value);
+    }
+    
+    /**
+     * Set the settingAttribute of the search option into the /config/config.php
+     * file
+     * @param $value int: set the attribute
+     * @return bool return true if the write process was successful
+     */
+    public static function setSearchOption($value){
+        return Groupmanagerconfig::setSettingByName('groupmanagerSearchOption',$value);
     }
     
     /**

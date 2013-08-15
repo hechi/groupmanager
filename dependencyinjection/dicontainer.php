@@ -32,7 +32,7 @@ use \OCA\AppFramework\DependencyInjection\DIContainer as BaseContainer;
 use \OCA\Groupmanager\Controller\PageController;
 use \OCA\Groupmanager\Controller\SettingController;
 
-// import the ItemMapper
+// import the GroupMapper
 use \OCA\Groupmanager\DB\GroupMapper;
 
 class DIContainer extends BaseContainer {

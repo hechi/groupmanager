@@ -27,7 +27,6 @@ namespace OCA\Groupmanager\Db;
 // import important AppFramework classes
 use \OCA\AppFramework\Core\API;
 use \OCA\AppFramework\Db\Mapper;
-use \OCA\AppFramework\Db\DoesNotExistException;
 
 class GroupMapper extends Mapper {
 
