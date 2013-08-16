@@ -228,7 +228,8 @@ function removeGroup(gid,element){
             self.hideRightContent();
         }else{
             //TODO
-            alert("you dont have the permission to delete this group");
+            //alert("you dont have the permission to delete this group");
+            self.displayError("you dont have the permission to delete this group");
         }
     });
 }
@@ -254,11 +255,13 @@ function removeMember(uid,element){
             });
         }else{
             //TODO
-            alert("can not remove all admin members");
+            //alert("can not remove all admin members");
+            self.displayError(" can not remove all admin members");
         }
     }else{
         //TODO print error because only one member left
-        alert("can not remove all members");
+        //alert("can not remove all members");
+        self.displayError(" can not remove all members");
     }
 }
 
@@ -438,7 +441,7 @@ function createUser(uid,name){
                 self.addMember(uid,false,true);
                 if(group.isMember(uid)){
                     //TODO
-                    alert("user is already member of this group");
+                    self.displayError("user is already member of this group");
                 }else{
                     GROUPDB.addMember(group.getGroupid(),uid,function(result){
                         if(result){
