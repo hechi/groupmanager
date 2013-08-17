@@ -118,6 +118,25 @@
     height:20px;
 }
 
+#start{ 
+    margin-top:2.8em;
+    position:relative;
+    width:80%;
+    overflow:auto;
+    float:right;
+    opacity: 0.2;       /* modern browser */  
+    -moz-opacity: 0.2;  /* older Mozilla browser */  
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=20)"; /* IE8 in Standard Compliant Mode */  
+    filter:alpha(opacity=20); /* IE5.x -7.0 */  
+    z-index:49;
+    /*
+    background-position:right bottom;
+    background-repeat:no-repeat;
+    background-image:url('%appswebroot%/groupmanager/img/groupmanager.svg'); 
+    background-size: contain; 
+    */
+}
+
 #right { 
     margin:top auto;
     position:relative;
@@ -221,7 +240,8 @@
     z-index: 200;
 }
 #member {
-    background-color: white; color: #333333;
+    background-color: white; 
+    color: #333333;
     z-index: 101;
 }
 /* GROUPLIST LEFTCONTENT*/

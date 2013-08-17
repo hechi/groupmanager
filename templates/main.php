@@ -17,6 +17,8 @@
         <!-- filled by the /js/app.js -->
     </ul>
 </div>
+<!-- only for the startpage -->
+<div id="start"  align="center"></div>
 <!-- content of the activated group -->
 <div id="right" class="hidden">
 	<div id="userSearchResult" class="userSearch">

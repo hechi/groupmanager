@@ -57,7 +57,6 @@ class GroupmanagerBackend implements \OCP\GroupInterface {
      *
      */
     public function implementsActions($actions){
-        //TODO check again
         return (bool)(OC_GROUP_BACKEND_GET_DISPLAYNAME & $actions);
     }
 

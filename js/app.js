@@ -27,6 +27,7 @@ var members = new Array();
 /* for better use, because this is not erverywhere usable */
 var self;
 /*********** elements of the template ***********/
+var rightcontent;
 var newGroupButton;
 var newGroupField;
 var grouplist;
@@ -43,6 +44,7 @@ var groupdescription;
 var groupdescriptionsave;
 var modDescription;
 var newDescription;
+var start;
 
 /*********** STATUS-FLAGS for notification of creating process ***********/
 var ERROR = -2;     // an error appears
@@ -79,6 +81,7 @@ function init(){
     self.groupdescriptionsave=$("#groupdescriptionsave");
     //class definitions
     self.modDescription=$(".modDescription");
+    self.start=$("#start");
 }
 
 // serialize a list to a jsonstring
@@ -227,8 +230,6 @@ function removeGroup(gid,element){
             element.remove();
             self.hideRightContent();
         }else{
-            //TODO
-            //alert("you dont have the permission to delete this group");
             self.displayError("you dont have the permission to delete this group");
         }
     });
@@ -254,14 +255,10 @@ function removeMember(uid,element){
                 }
             });
         }else{
-            //TODO
-            //alert("can not remove all admin members");
-            self.displayError(" can not remove all admin members");
+            self.displayError("can not remove all admin members");
         }
     }else{
-        //TODO print error because only one member left
-        //alert("can not remove all members");
-        self.displayError(" can not remove all members");
+        self.displayError("can not remove all members");
     }
 }
 
@@ -326,8 +323,11 @@ function createLiElement(gid,groupname,admin){
         removeIcon.addClass("action");
         removeIcon.attr('original-title',translate('Delete'));
         removeIcon.click(function(){
-            //TODO ask if you are sure
-            self.removeGroup(gid,newLiElement);
+            OCdialogs.confirm(translate('Delete this group. Are you sure?'),translate('delete group'),function(result){
+                if(result){
+                    self.removeGroup(gid,newLiElement);
+                }
+            });
         });    
         newLiElement.append(removeIcon);
     }
@@ -337,6 +337,7 @@ function createLiElement(gid,groupname,admin){
     newLiElement.click(function(){
         self.selectGroup(newLiElement);
         self.loadGroup(gid);
+        self.hideStartpage();
     });
     return newLiElement;
 }
@@ -440,7 +441,6 @@ function createUser(uid,name){
             if(group.isUserAdmin(OC.currentUser)){
                 self.addMember(uid,false,true);
                 if(group.isMember(uid)){
-                    //TODO
                     self.displayError("user is already member of this group");
                 }else{
                     GROUPDB.addMember(group.getGroupid(),uid,function(result){
@@ -473,7 +473,6 @@ function modifyMember(uid,permission){
 }
 
 /**
- * TODO should the user have the permission to remove himself?
  * create a HTML table row with the given parameters
  * @param int uid userid
  * @param string name which should be displayed
@@ -595,13 +594,38 @@ function contract(){
 function getGroups(){
     GROUPDB.getGroups(function(list){
         if(list!=null){
-            //TODO print init page on right side?
+            //print initialpage
+            self.showStartpage();
             for(var i=0;i<list.length;i++){
                 self.addGroup(list[i]);
                 self.debugLog("add group "+list[i].getGroupname());
             }
         }
     });
+}
+
+/**
+ * get image and add it to the start page
+ */
+function initStartpage(){
+    var img = $('<img>');
+    img.attr('src',OC.imagePath('groupmanager','groupmanager.svg'));
+    img.attr('width','50%');
+    self.start.append(img);
+}
+
+/**
+ * show startpage
+ */
+function showStartpage(){
+    self.start.removeClass('hidden');
+}
+
+/**
+ * hide startpage
+ */
+function hideStartpage(){
+    self.start.addClass('hidden');
 }
 
 /**
@@ -641,6 +665,7 @@ function topContent(){
  * add left content actions
  */
 function leftContent(){
+    initStartpage();
     getGroups();
 }
 
@@ -667,7 +692,8 @@ function rightContent(){
             self.contract();
             self.expandPic.attr('value','close');
         }
-    });    
+    });  
+    showStartpage();  
 }
 
 /**

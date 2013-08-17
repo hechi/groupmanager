@@ -21,5 +21,7 @@
 "What is the search key for users?" => "Was ist das Suchkriterium für Benutzer?",
 "username" => "Benutzernamen",
 "display name" => "Anzeigenamen",
-"both" => "beides"
+"both" => "beides",
+"Delete this group. Are you sure?" => "Diese Gruppe soll gelöscht werden?",
+"delete group" => "Gruppe löschen",
 );
