@@ -108,7 +108,7 @@ function serializeListToJSON(tagName){
 function notifyGroupCreation(flag){
     switch(flag){
         case ERROR:
-            displayError("error is appeared");
+            displayError("Error is appeared");
             break;
         case NOTVALID:
             displayNotValid();
@@ -120,7 +120,7 @@ function notifyGroupCreation(flag){
             displayLoading();
             break;
         default: 
-            displayError("groupcreation error");
+            displayError("Groupcreation error");
             debugLog("groupcreation error");
     }
 }
@@ -130,7 +130,7 @@ function notifyGroupCreation(flag){
  * @param string msg which should be displayed for the user
  */
 function displayError(msg){
-    OC.dialogs.alert(msg+" please check logs or contact your systemadministrator",t('groupmanager','Error'));
+    OC.dialogs.alert(msg+" please check logs or contact your systemadministrator.",t('groupmanager','Error'));
     debugLog(msg);
 }
 
@@ -230,7 +230,7 @@ function removeGroup(gid,element){
             element.remove();
             self.hideRightContent();
         }else{
-            self.displayError("you dont have the permission to delete this group");
+            self.displayError("You dont have the permission to delete this group");
         }
     });
 }
@@ -255,10 +255,10 @@ function removeMember(uid,element){
                 }
             });
         }else{
-            self.displayError("can not remove all admin members");
+            self.displayError("Can not remove all admin members");
         }
     }else{
-        self.displayError("can not remove all members");
+        self.displayError("Can not remove all members");
     }
 }
 
@@ -441,7 +441,7 @@ function createUser(uid,name){
             if(group.isUserAdmin(OC.currentUser)){
                 self.addMember(uid,false,true);
                 if(group.isMember(uid)){
-                    self.displayError("user is already member of this group");
+                    self.displayError("User is already member of this group");
                 }else{
                     GROUPDB.addMember(group.getGroupid(),uid,function(result){
                         if(result){

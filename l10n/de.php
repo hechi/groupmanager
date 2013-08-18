@@ -11,7 +11,7 @@
 "Unique group identifier" => "Eindeutige Gruppenkennung",
 "Yes" => "Ja",
 "Autocompletion" => "Autovervollständigung",
-"Search Users" => "Suche Benutzer",
+"search/add user" => "suchen/hinzufügen",
 "Groupname" => "Gruppenname",
 "please enter a new group name" => "Bitte geben Sie einen neuen Gruppennamen ein",
 "group name already taken" => "Gruppenname bereits vergeben",

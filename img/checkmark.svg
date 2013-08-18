@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2995"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="checkmark.svg"
+   inkscape:export-filename="/home/poxy/TUB/Versionsverwaltung/owncloudGroupmanager/img/checkmark.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs2997" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.8"
+     inkscape:cx="8.9818286"
+     inkscape:cy="7.6580825"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="996"
+     inkscape:window-height="616"
+     inkscape:window-x="168"
+     inkscape:window-y="94"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3000">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1036.3622)">
+    <rect
+       style="fill:#2b0000;fill-opacity:1;stroke:none"
+       id="rect3132-7"
+       width="12.061403"
+       height="2.5"
+       x="-896.69653"
+       y="544.6001"
+       ry="1.25"
+       rx="1.052632"
+       inkscape:export-filename="/home/poxy/TUB/Versionsverwaltung/owncloudGroupmanager/img/checkmark.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="matrix(0.51449101,-0.85749577,0.85749577,0.51449101,0,0)" />
+    <rect
+       style="fill:#2b0000;fill-opacity:1;stroke:none"
+       id="rect3132-7-3"
+       width="6.3157892"
+       height="2.5"
+       x="655.09363"
+       y="813.48804"
+       ry="1.25"
+       rx="0.8251524"
+       inkscape:export-filename="/home/poxy/TUB/Versionsverwaltung/owncloudGroupmanager/img/checkmark.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="matrix(0.78132553,0.62412372,-0.62412372,0.78132553,0,0)" />
+  </g>
+</svg>

@@ -83,12 +83,10 @@
 {
   position: relative;
   width: 30%;
-  background: #dddddd;
+  background: #f8f8f8;
   -moz-border-radius: 4px;
   border-radius: 4px;
   padding: 0.5em 1.5em;
-  color: rgba(0,0,0, .8);
-  text-shadow: 0 1px 0 #ffffff;
   line-height: 1;
   margin: 30px auto;
   margin-left:5px;
@@ -98,15 +96,17 @@
 {
   position: relative;
   width: 30%;
-  background: #808080;
+  background: #dddddd;
   -moz-border-radius: 4px;
   border-radius: 4px;
   padding: 0.5em 1.5em;
-  color: rgba(0,0,0, .8);
-  text-shadow: 0 1px 0 #ffffff;
   line-height: 1;
   margin: 30px auto;
   margin-left:5px;
+  
+  background-position:right center;
+  background-repeat:no-repeat;
+  background-image:url('%appswebroot%/groupmanager/img/add.svg'); 
 }
 
 #notifyCreation{
@@ -119,10 +119,10 @@
 }
 
 #start{ 
-    margin-top:2.8em;
     position:relative;
-    width:80%;
-    overflow:auto;
+	top:10%;
+	width:80%;
+	overflow:auto;
     float:right;
     opacity: 0.2;       /* modern browser */  
     -moz-opacity: 0.2;  /* older Mozilla browser */  

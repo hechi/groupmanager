@@ -22,7 +22,7 @@
 <!-- content of the activated group -->
 <div id="right" class="hidden">
 	<div id="userSearchResult" class="userSearch">
-	    <input id="userSearchInput" class=" svg" placeholder="{{trans('Search Users')}}" type="search"/></input>
+	    <input id="userSearchInput" class=" svg" placeholder="{{trans('search/add user')}}" type="search"/></input>
 	</div>
 	<div id="expandDescription">
 	    <img id="expandPic" class="action" alt="{{trans('expand for description')}}"/>
