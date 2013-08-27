@@ -377,7 +377,7 @@ function loadGroup(gid){
                 GROUPDB.getUser(memberList[i][0],function(member){
                     if(member!=null){
                         self.debugLog("add user "+member.uid+" to group "+group.getGroupname());
-                        self.addMember(member.uid,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
+                        self.addMember(member.uid,member.displayname,group.isUserAdmin(member.uid),group.isUserAdmin(OC.currentUser));
                     }
                 });
             }
@@ -439,7 +439,7 @@ function createUser(uid,name){
     newTextField.click(function(){
         GROUPDB.getGroupWithId(self.getSelectedGroupid(),function(group){
             if(group.isUserAdmin(OC.currentUser)){
-                self.addMember(uid,false,true);
+                self.addMember(uid,name,false,true);
                 if(group.isMember(uid)){
                     self.displayError("User is already member of this group");
                 }else{
@@ -543,16 +543,23 @@ function createMember(uid,name,admin,adminPermission){
 /**
  * add a user as member to the group
  * @param int uid of the user
+ * @param string displayname of user
  * @param bool admin true if the user have admin privileges
  * @param bool adminPermission did the current user have the permission to change the group preferences
  */
-function addMember(uid,admin,adminPermission){
+function addMember(uid,displayname,admin,adminPermission){
+    var tbody = self.memberlist.children('tbody');
+    if(tbody.find('#'+uid).length<1){
+        tbody.append(self.createMember(uid,displayname,admin,adminPermission));
+    }   
+    /*
     GROUPDB.getUser(uid,function(member){
         var tbody = self.memberlist.children('tbody');
         if(tbody.find('#'+uid).length<1){
             tbody.append(self.createMember(member.uid,member.displayname,admin,adminPermission));
         }
     });
+    */
 }
 
 /**
