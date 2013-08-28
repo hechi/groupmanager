@@ -160,7 +160,7 @@ class PageController extends Controller {
         // send by js/app.js
         $uid = $this->params('username');
                 
-        $users = \OCP\User::getUsers($uid);
+        $users = \OCP\User::getUsers($uid,1);
         // create a array with parameters if need
 		$params = array();
 		// check for usernames with the searchstring
@@ -193,11 +193,11 @@ class PageController extends Controller {
         $searchString = $this->params('searchString');
                 
         //\OCP\User::getUsers($search = '', $limit = null, $offset = null);
-        if(Groupmanagerconfig::getSearchOption()==Groupmanagerconfig::$SEARCHUSERNAME){
-            $users = \OCP\User::getUsers($searchString);
-        }else{
-            $users = \OCP\User::getUsers();
-        }
+        //if(Groupmanagerconfig::getSearchOption()==Groupmanagerconfig::$SEARCHUSERNAME){
+            $users = \OCP\User::getUsers($searchString,15);
+        //}else{
+        //    $users = \OCP\User::getUsers("",15);
+        //}
         // create a array with parameters if need
 		$params = array();
 		// check for usernames with the searchstring

@@ -612,6 +612,37 @@ function getGroups(){
 }
 
 /**
+ * register autocompletion on the inputfield
+ */
+function registerSearchInput(){
+    self.debugLog("register search action");
+    self.userSearchInput.autocomplete({minLength: 1, 
+            source: function(search, response) {
+                    GROUPDB.getUsersWith(search.term,function(userList){
+                        self.userSearchResult.children(".userBox").remove();
+                        for(var i = 0;i<userList.length&&i<=6;i++){
+                            if(i>=6){
+                                var moreUser = $('<textfield>');
+                                moreUser.text("to many users...");
+                                moreUser.addClass("userBox");
+                                self.userSearchResult.append(moreUser);
+                            }else{
+                                self.userSearchResult.append(createUser(userList[i].uid,userList[i].displayname));
+                            }
+                        }
+                        response(userList);
+                    });
+            },
+            focus: function(event, focused) {
+                event.preventDefault();
+            },
+            select: function(event, selected) {
+                event.stopPropagation();
+                return false;
+            }}).data('ui-autocomplete')._renderItem = function(ul, item){/*no dropdown menue*/};
+}
+
+/**
  * get image and add it to the start page
  */
 function initStartpage(){
@@ -680,14 +711,7 @@ function leftContent(){
  * add right content actions
  */
 function rightContent(){
-    self.userSearchInput.keyup(function(event){
-        console.log(self.userSearchInput.attr('value'));
-        self.getUsers(self.userSearchInput.attr('value'));
-    });
-    //text disappear if user click into that field
-    self.userSearchInput.click(function(){
-        self.userSearchInput.attr('value','');
-    });
+    self.registerSearchInput();
     self.expandPic.attr('src',OC.imagePath('core','actions/triangle-n.png'));
     self.expandPic.attr('value','close');
     self.expandDescription.height(self.expandPic.height()+16);
